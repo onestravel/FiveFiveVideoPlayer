@@ -101,9 +101,18 @@ import cn.onestravel.fivefiveplayer.interf.PlayerInterface
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun setSpeed(speed: Float) {
-        val pp: PlaybackParams = mMediaPlayer.playbackParams
-        pp.speed = speed
-        mMediaPlayer.playbackParams = pp
+       val isPlay = isPlaying()
+        try {
+            val pp: PlaybackParams = mMediaPlayer.playbackParams
+            pp.speed = speed
+            mMediaPlayer.playbackParams = pp
+            if(!isPlay){
+                pause()
+            }
+        }catch (e:java.lang.Exception){
+            e.printStackTrace()
+        }
+
     }
 
     override fun setSurface(surface: Surface) {
@@ -127,7 +136,9 @@ import cn.onestravel.fivefiveplayer.interf.PlayerInterface
                 prepare(it)
             }
         } else {
-            player.setSurfaceTexture(mSurfaceTexture!!)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                player.setSurfaceTexture(mSurfaceTexture!!)
+            }
         }
     }
 

@@ -13,7 +13,9 @@ import cn.onestravel.fivefiveplayer.utils.LogHelper
 import cn.onestravel.fivefiveplayer.view.VideoTextureView
 
 /**
- * Created by wanghu on 2020/3/19
+ * @author onestravel
+ * @createTime 2020-03-19
+ * @description TODO
  */
 class FivePlayer {
     private var mUri: Uri? = null
@@ -199,10 +201,10 @@ class FivePlayer {
         if (mState == PlayerInterface.STATE_PREPARED) {
             mState = PlayerInterface.STATE_PLAYING
         }
-        onPlaying()
         mPlayerCallBack?.let {
-            it.onStart()
+            it.onStart(true)
         }
+        onPlaying()
     }
 
     /**
@@ -248,6 +250,9 @@ class FivePlayer {
     fun onPlaying() {
         mState = PlayerInterface.STATE_PLAYING
         mProgressHandler.post(mProgressTicker)
+        mPlayerCallBack?.let {
+            it.onStart(false)
+        }
     }
 
     /**

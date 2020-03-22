@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="five_string_speed_arr">
+        <item>@string/five_string_speed_0_75</item>
+        <item>@string/five_string_speed_1_0</item>
+        <item>@string/five_string_speed_1_25</item>
+        <item>@string/five_string_speed_1_5</item>
+        <item>@string/five_string_speed_2_0</item>
+    </array>
+
+    <array name="five_string_definition_arr">
+        <item>@string/five_string_definition_fd</item>
+        <item>@string/five_string_definition_sd</item>
+        <item>@string/five_string_definition_hd</item>
+        <item>@string/five_string_definition_bd</item>
+    </array>
+</resources>

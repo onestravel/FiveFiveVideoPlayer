@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/five_view_progress_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/five_view_progress_seek_bar"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:text="00:00"
+        android:textColor="@android:color/white"
+        android:textSize="13sp" />
+
+    <TextView
+        android:id="@+id/five_view_duration_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/five_view_progress_seek_bar"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:text="00:00"
+        android:textColor="@android:color/white"
+        android:textSize="13sp" />
+
+
+    <SeekBar
+        android:id="@+id/five_view_progress_seek_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_toLeftOf="@+id/five_view_duration_text"
+        android:layout_toRightOf="@+id/five_view_progress_text"
+        android:maxHeight="2dp"
+        android:minHeight="2dp"
+        android:paddingStart="5dp"
+        android:paddingLeft="0dp"
+        android:paddingEnd="5dp"
+        android:paddingRight="0dp"
+        android:progressDrawable="@drawable/five_drawable_seek_bar_white"
+        android:thumb="@drawable/five_drawable_seekbar_thumb" />
+
+    <ImageView
+        android:id="@+id/five_view_start_view"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_below="@+id/five_view_progress_seek_bar"
+        android:padding="5dp"
+        android:src="@mipmap/five_icon_play" />
+
+    <ImageView
+        android:id="@+id/five_view_full_screen_view"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_below="@+id/five_view_progress_seek_bar"
+        android:layout_alignParentRight="true"
+        android:padding="5dp"
+        android:layout_marginLeft="5dp"
+        android:src="@mipmap/five_icon_full_screen" />
+
+    <TextView
+        android:id="@+id/five_view_definition_text"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:layout_alignBottom="@+id/five_view_full_screen_view"
+        android:layout_toLeftOf="@+id/five_view_full_screen_view"
+        android:gravity="center_vertical"
+        android:paddingLeft="13dp"
+        android:paddingRight="8dp"
+        android:text="@string/five_string_definition_sd"
+        android:visibility="gone"
+        android:textColor="@android:color/white"
+        android:textSize="13sp" />
+
+    <TextView
+        android:id="@+id/five_view_speed_text"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:layout_alignBottom="@+id/five_view_full_screen_view"
+        android:layout_toLeftOf="@+id/five_view_definition_text"
+        android:gravity="center_vertical"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:text="@string/five_string_speed"
+        android:textColor="@android:color/white"
+        android:textSize="13sp" />
+</RelativeLayout>

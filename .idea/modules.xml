@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/FiveFivePlayer.iml" filepath="$PROJECT_DIR$/.idea/FiveFivePlayer.iml" group="FiveFivePlayer" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="FiveFivePlayer/app" />
+      <module fileurl="file://$PROJECT_DIR$/fivefiveplayer/fivefiveplayer.iml" filepath="$PROJECT_DIR$/fivefiveplayer/fivefiveplayer.iml" group="FiveFivePlayer/fivefiveplayer" />
+    </modules>
+  </component>
+</project>

@@ -4,7 +4,9 @@ import androidx.annotation.IntDef
 import cn.onestravel.fivefiveplayer.interf.PlayerInterface
 
 /**
- * Created by wanghu on 2020/3/20
+ * @author onestravel
+ * @createTime 2020-03-20
+ * @description TODO
  */
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.SOURCE)

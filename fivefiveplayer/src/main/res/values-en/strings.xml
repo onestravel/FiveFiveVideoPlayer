@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="five_string_speed">Speed</string>
+    <string name="five_string_speed_0_75">0.75X</string>
+    <string name="five_string_speed_1_0">1.0X</string>
+    <string name="five_string_speed_1_25">1.25X</string>
+    <string name="five_string_speed_1_5">1.5X</string>
+    <string name="five_string_speed_2_0">2.0X</string>
+    <string name="five_string_definition_fd">Smooth</string>
+    <string name="five_string_definition_sd">SD</string>
+    <string name="five_string_definition_hd">HD</string>
+    <string name="five_string_definition_bd">FHD</string>
+    <string name="five_string_volume_mute">Mute</string>
+    <string name="five_string_volume">Volume</string>
+    <string name="five_string_brightness">Brightness</string>
+</resources>

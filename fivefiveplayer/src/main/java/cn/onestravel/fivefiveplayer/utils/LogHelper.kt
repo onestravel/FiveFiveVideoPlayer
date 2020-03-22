@@ -3,6 +3,11 @@ package cn.onestravel.fivefiveplayer.utils
 import android.util.Log
 import cn.onestravel.fivefiveplayer.BuildConfig
 
+/**
+ * @author onestravel
+ * @createTime 2020-03-20
+ * @description TODO
+ */
 object LogHelper {
     private const  val TAG = "FiveFivePlayer"
     var isLogEnabled = BuildConfig.DEBUG

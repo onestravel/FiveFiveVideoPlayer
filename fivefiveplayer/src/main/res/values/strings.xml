@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="five_string_speed">倍速</string>
+    <string name="five_string_speed_0_75">0.75X</string>
+    <string name="five_string_speed_1_0">1.0X</string>
+    <string name="five_string_speed_1_25">1.25X</string>
+    <string name="five_string_speed_1_5">1.5X</string>
+    <string name="five_string_speed_2_0">2.0X</string>
+    <string name="five_string_definition_fd">流畅</string>
+    <string name="five_string_definition_sd">标清</string>
+    <string name="five_string_definition_hd">高清</string>
+    <string name="five_string_definition_bd">超清</string>
+    <string name="five_string_volume_mute">静音</string>
+    <string name="five_string_volume">音量</string>
+    <string name="five_string_brightness">亮度</string>
+</resources>

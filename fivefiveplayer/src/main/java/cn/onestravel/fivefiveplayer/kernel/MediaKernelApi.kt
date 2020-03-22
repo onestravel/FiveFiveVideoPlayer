@@ -7,7 +7,9 @@ import android.os.Looper
 import cn.onestravel.fivefiveplayer.FivePlayer
 
 /**
- * Created by onestravel on 2020/3/19
+ * @author onestravel
+ * @createTime 2020-03-19
+ * @description TODO
  */
 abstract class MediaKernelApi(player: FivePlayer) : MediaKernelInterface {
     val TAG = javaClass.simpleName

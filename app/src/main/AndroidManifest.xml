@@ -3,6 +3,7 @@
     package="cn.onestravel.fivefiveplayer.demo">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -19,6 +20,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".FiveVideoViewActivity" />
+        <activity android:name=".FiveVideoPlayerActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"/>
     </application>
 
 </manifest>

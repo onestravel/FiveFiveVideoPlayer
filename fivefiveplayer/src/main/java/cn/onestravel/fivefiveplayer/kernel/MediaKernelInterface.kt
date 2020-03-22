@@ -4,10 +4,12 @@ import android.view.Surface
 import android.view.TextureView
 import cn.onestravel.fivefiveplayer.MediaDataSource
 
+
 /**
- * 媒体播放内核接口
- * Created by onestravel on 2020/3/19
- */
+ * @author onestravel
+ * @createTime 2020-03-19
+ * @description 媒体播放内核接口
+*/
 interface MediaKernelInterface : TextureView.SurfaceTextureListener{
     /**
      * 开始播放视频

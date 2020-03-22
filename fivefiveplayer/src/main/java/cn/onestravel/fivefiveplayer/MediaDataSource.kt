@@ -2,8 +2,11 @@ package cn.onestravel.fivefiveplayer
 
 import android.net.Uri
 
+
 /**
- * Created by onestravel on 2020/3/20
+ * @author onestravel
+ * @createTime 2020-03-20
+ * @description TODO
  */
 class MediaDataSource {
     var title: String = ""

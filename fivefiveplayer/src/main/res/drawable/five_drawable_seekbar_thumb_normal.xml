@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <size
+                android:width="10dp"
+                android:height="10dp" />
+            <solid android:color="@android:color/transparent" />
+        </shape>
+    </item>
+    <item android:width="10dp" android:height="10dp" android:drawable="@mipmap/five_icon_seekbar_thumb" />
+</layer-list>

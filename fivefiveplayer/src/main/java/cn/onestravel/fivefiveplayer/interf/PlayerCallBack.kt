@@ -4,7 +4,9 @@ import android.graphics.SurfaceTexture
 import java.lang.Exception
 
 /**
- * Created by wanghu on 2020/3/20
+ * @author onestravel
+ * @createTime 2020-03-20
+ * @description 播放器回调接口
  */
 interface PlayerCallBack {
     /**
@@ -15,27 +17,27 @@ interface PlayerCallBack {
     /**
      * 视频开始播放回调
      */
-    fun onStart();
+    fun onStart(first: Boolean)
 
     /**
      * 视频停止播放回调
      */
-    fun onStopped();
+    fun onStopped()
 
     /**
      * 视频暂停播放回调
      */
-    fun onPaused();
+    fun onPaused()
 
     /**
      * 视频继续播放回调
      */
-    fun onResume();
+    fun onResume()
 
     /**
      * 视频定位到指定位置回调
      */
-    fun onSeekTo(position: Long);
+    fun onSeekTo(position: Long)
 
 
     /**

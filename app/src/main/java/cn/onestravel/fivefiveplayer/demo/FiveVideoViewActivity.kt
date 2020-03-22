@@ -2,6 +2,7 @@ package cn.onestravel.fivefiveplayer.demo
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import cn.onestravel.fivefiveplayer.interf.PlayerInterface
 import kotlinx.android.synthetic.main.activity_five_video_view.*
 
 /**
@@ -31,6 +32,8 @@ open class FiveVideoViewActivity : AppCompatActivity() {
         fiveVideoView.setDataSource(path)
         fiveVideoView.setOnPreparedListener {
             it.start()
+            it.setSpeed(1.5f)
+            fiveVideoView.setVideoDisplayType(PlayerInterface.VIDEO_DISPLAY_TYPE_FIT_CENTER)
         }
         fiveVideoView.setOnClickListener { }
     }

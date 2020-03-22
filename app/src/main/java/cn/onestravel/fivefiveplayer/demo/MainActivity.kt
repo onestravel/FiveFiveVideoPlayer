@@ -11,7 +11,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         btnFiveVideoView.setOnClickListener {
-            val intent = Intent(this@MainActivity,FiveVideoViewActivity::class.java)
+            val intent = Intent(this@MainActivity, FiveVideoViewActivity::class.java)
+            startActivity(intent)
+        }
+        btnFiveVideoPlayer.setOnClickListener {
+            val intent = Intent(this@MainActivity, FiveVideoPlayerActivity::class.java)
             startActivity(intent)
         }
     }

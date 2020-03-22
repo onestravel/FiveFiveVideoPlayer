@@ -1,12 +1,18 @@
 package cn.onestravel.fivefiveplayer.interf
 
+import cn.onestravel.fivefiveplayer.VideoDisplayTypeDef
 import java.lang.Exception
 
+
 /**
- * 视频播放器开放API
- * Created by onestravel on 2020/3/19
+ * @author onestravel
+ * @createTime 2020-03-19
+ * @description 视频播放器开放API
  */
 typealias OnPreparedListener = (PlayerInterface) -> Unit
+typealias OnProgressListener = (position: Long, duration: Long) -> Unit
+typealias OnCompleteListener = () -> Unit
+typealias OnErrorListener = (Exception) -> Unit
 
 interface PlayerInterface {
     companion object {
@@ -81,6 +87,14 @@ interface PlayerInterface {
          * 填充满裁切视频
          */
         const val VIDEO_DISPLAY_TYPE_CENTER_CROP = 3
+
+
+        /**
+         * 填充满裁切视频
+         */
+        const val PLAYER_STATE_NORMAL = 11
+        const val PLAYER_STATE_FULL_SCREEN = 12
+        const val PLAYER_STATE_TINY_WINDOW = 13
 
     }
 
@@ -159,5 +173,15 @@ interface PlayerInterface {
      * 设置旋转角度
      */
     fun setVideoRotation(rotation: Float)
+
+    /**
+     * 设置视频显示类型
+     * @param type { #PlayerInterface#VIDEO_DISPLAY_TYPE_ADAPTER,
+     *                  PlayerInterface#VIDEO_DISPLAY_TYPE_ORIGINAL,
+     *                  PlayerInterface#VIDEO_DISPLAY_TYPE_FIT_CENTER,
+     *                  PlayerInterface#VIDEO_DISPLAY_TYPE_CENTER_CROP
+     *                  }
+     */
+    fun setVideoDisplayType(@VideoDisplayTypeDef displayType: Int)
 
 }
