@@ -6,8 +6,7 @@
 #### 1.2 APK 功能体验
 demo比较粗糙，请勿介意
 
-[APK 下载](resources/apk/FiveFivePlayer.apk) 安装体验
-
+[APK 下载](resources/apk/FiveFivePlayer.apk?raw=true) 安装体验
 
 扫描二维码图片安装体验
 
