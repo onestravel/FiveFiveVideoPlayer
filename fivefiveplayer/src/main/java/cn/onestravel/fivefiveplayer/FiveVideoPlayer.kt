@@ -118,6 +118,15 @@ class FiveVideoPlayer @JvmOverloads constructor(
         }
     }
 
+    fun setDataSource(url: String, title: String) {
+        mFiveVideoView?.let {
+            it.setDataSource(url)
+        }
+        mFiveTitleView?.let {
+            it.text = title
+        }
+    }
+
     override fun setDataSource(dataSource: MediaDataSource) {
         mFiveVideoView?.let {
             it.setDataSource(dataSource)

@@ -66,6 +66,14 @@ class FiveVideoPlayerActivity : AppCompatActivity() {
     }
 
     private fun initData() {
+        val path = intent.getStringExtra(VIDEO_PATH)
+        val title = intent.getStringExtra(VIDEO_TITLE)
+        val looping = intent.getBooleanExtra(VIDEO_LOOPING, false)
+        if (TextUtils.isEmpty(path)) {
+            finish()
+            return
+        }
+        mediaDataSource = MediaDataSource(title, Uri.parse(path), looping)
         fiveVideoPlayer.setOnPreparedListener {
             it.start()
             it.setVideoDisplayType(PlayerInterface.VIDEO_DISPLAY_TYPE_FIT_CENTER)
