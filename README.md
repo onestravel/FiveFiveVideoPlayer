@@ -4,9 +4,14 @@
 #### 1.1 效果图
 
 #### 1.2 APK 功能体验
-[APK 下载](resources/apk/FiveFivePlayer.apk)
+demo比较粗糙，请勿介意
+
+[APK 下载](resources/apk/FiveFivePlayer.apk) 安装体验
+
 
 扫描二维码图片安装体验
+
+
 ![二维码](resources/apk/FiveFivePlayer_qr_code.png)
 ## 2. 快速集成
 #### 2.1 gradle 引入
