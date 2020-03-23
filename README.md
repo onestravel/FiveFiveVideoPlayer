@@ -4,10 +4,10 @@
 #### 1.1 效果图
 
 #### 1.2 APK 功能体验
-[APK 下载](https://github.com/onestravel/FiveFivePlayer/blob/master/resources/APK/FiveFivePlayer.apk)
+[APK 下载](https://github.com/onestravel/FiveFivePlayer/tree/master/resources/apk/FiveFivePlayer.apk)
 
 扫描二维码图片安装体验
-![二维码](https://github.com/onestravel/FiveFivePlayer/blob/master/resources/APK/FiveFivePlayer_qr_code.png)
+![二维码](https://github.com/onestravel/FiveFivePlayer/tree/master/resources/apk/FiveFivePlayer_qr_code.png)
 ## 2. 快速集成
 #### 2.1 gradle 引入
 ```
