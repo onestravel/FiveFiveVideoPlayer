@@ -1,10 +1,7 @@
 package cn.onestravel.fivefiveplayer.impl
 
 import android.content.Context
-import android.content.Intent
 import android.media.AudioManager
-import android.net.Uri
-import android.os.Build
 import android.provider.Settings
 import android.view.GestureDetector
 import android.view.LayoutInflater
@@ -164,12 +161,7 @@ class FiveVideoGestureListener(val mContext: Context, val fiveVideoView: FiveVid
                     mGestureMotion =
                         GESTURE_MOTION_BRIGHT
                     try {
-                        val system_brightness_mode: Int = Settings.System.getInt(
-                            mContext.contentResolver,
-                            Settings.System.SCREEN_BRIGHTNESS_MODE
-                        )
-                        if (system_brightness_mode != Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL)
-                            initSystemLight()
+                        mBrightness = (VideoUtils.getAppBrightness(mContext) * 255).toInt()
                     } catch (e: Settings.SettingNotFoundException) {
                         e.printStackTrace()
                     }
@@ -182,14 +174,12 @@ class FiveVideoGestureListener(val mContext: Context, val fiveVideoView: FiveVid
             if (Math.abs(distanceX) > Math.abs(distanceY)) { // 横向移动大于纵向移动
                 val duration: Long = fiveVideoView.getDuration()
                 if (distanceX >= 1) { // 快退，用步长控制改变速度，可微调
-//                    ivGestureProgress!!.setImageResource(R.drawable.player_backward)
                     if (mGestureProgress > GESTURE_PROGRESS_STEP) { // 避免为负
                         mGestureProgress -= GESTURE_PROGRESS_STEP // scroll方法执行一次快退3秒
                     } else {
                         mGestureProgress = 0
                     }
                 } else if (distanceX <= -1) { // 快进
-//                    ivGestureProgress!!.setImageResource(R.drawable.player_forward)
                     if (mGestureProgress < duration - GESTURE_PROGRESS_STEP) { // 避免超过总时长
                         mGestureProgress += GESTURE_PROGRESS_STEP // scroll执行一次快进3秒
                     } else {
@@ -221,7 +211,6 @@ class FiveVideoGestureListener(val mContext: Context, val fiveVideoView: FiveVid
                     if (currentVolume < maxVolume) { // 为避免调节过快，distanceY应大于一个设定值
                         currentVolume += 0.1f
                     }
-//                    ivGestureVolume!!.setImageResource(R.drawable.player_volume)
                 } else if (distanceY <= -1) { // 音量调小
                     if (currentVolume > 0) {
                         currentVolume -= 0.1f
@@ -251,13 +240,7 @@ class FiveVideoGestureListener(val mContext: Context, val fiveVideoView: FiveVid
         } else if (mGestureMotion === GESTURE_MOTION_BRIGHT) {
 //            ivGestureBright!!.setImageResource(R.drawable.player_bright)
             try {
-                mBrightness = Settings.System.getInt(
-                    mContext.contentResolver,
-                    Settings.System.SCREEN_BRIGHTNESS
-                )
-//                if (brightness > 100) brightness = 100
-//                if (brightness < 50) GESTURE_BRIGHTNESS_STEP =
-//                    5 else if (brightness < 100) GESTURE_BRIGHTNESS_STEP = 5
+                mBrightness = (VideoUtils.getAppBrightness(mContext) * 255).toInt()
                 if (distanceY >= 1) {
                     mBrightness += GESTURE_BRIGHTNESS_STEP
                 } else if (distanceY <= -1) {
@@ -266,7 +249,7 @@ class FiveVideoGestureListener(val mContext: Context, val fiveVideoView: FiveVid
                 if (mBrightness < 5) mBrightness = 5
                 if (mBrightness > 255) mBrightness = 255
 //                LogHelper.i(TAG, "brightness $mBrightness")
-                setSystemLight(mBrightness)
+                setAppLight(mBrightness)
                 val percent = mBrightness.toFloat() * 100 / 255
                 mGestureBrightProgressView.setProgress(percent)
                 fiveVideoView.showGestureChangeView(GESTURE_MOTION_BRIGHT, mGestureBrightLayout)
@@ -281,45 +264,15 @@ class FiveVideoGestureListener(val mContext: Context, val fiveVideoView: FiveVid
 
     }
 
-    private fun initSystemLight() {
+
+    /**
+     * 设置 Activity 亮度
+     */
+    private fun setAppLight(brightness: Int) {
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (!Settings.System.canWrite(mContext)) {
-                    val intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
-                    intent.data = Uri.parse("package:" + mContext.packageName)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    mContext.startActivity(intent)
-                } else {
-                    Settings.System.putInt(
-                        mContext.contentResolver,
-                        Settings.System.SCREEN_BRIGHTNESS_MODE,
-                        Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL
-                    )
-                }
-            } else {
-                Settings.System.putInt(
-                    mContext.contentResolver,
-                    Settings.System.SCREEN_BRIGHTNESS_MODE,
-                    Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL
-                )
-
-            }
+            VideoUtils.setAppBrightness(mContext, brightness.toFloat() / 255)
         } catch (e: Exception) {
-
-        }
-
-
-    }
-
-    private fun setSystemLight(brightness: Int) {
-        try {
-            Settings.System.putInt(
-                mContext.contentResolver,
-                Settings.System.SCREEN_BRIGHTNESS,
-                brightness
-            )
-        } catch (e: Exception) {
-
+            e.printStackTrace()
         }
     }
 

@@ -19,13 +19,7 @@ open class FiveVideoViewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_five_video_view)
-        ivRotation.setOnClickListener {
-            rotation += 90
-            if (rotation > 270) {
-                rotation = 0f
-            }
-            fiveVideoView.setVideoRotation(rotation)
-        }
+
         initData()
     }
 
@@ -33,7 +27,6 @@ open class FiveVideoViewActivity : AppCompatActivity() {
         fiveVideoView.setDataSource(path)
         fiveVideoView.setOnPreparedListener {
             it.start()
-            it.setSpeed(1.5f)
             fiveVideoView.setVideoDisplayType(PlayerInterface.VIDEO_DISPLAY_TYPE_FIT_CENTER)
         }
         fiveVideoView.setOnClickListener { }

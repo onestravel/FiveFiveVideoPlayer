@@ -6,6 +6,7 @@ import android.app.Dialog
 import android.content.Context
 import android.content.ContextWrapper
 import android.os.Build
+import android.provider.Settings
 import android.util.TypedValue
 import android.view.ContextThemeWrapper
 import android.view.View
@@ -264,6 +265,53 @@ object VideoUtils {
     }
 
     /**
+     * 设置当前APP的亮度
+     *
+     * @param activity
+     * @param brightnessPercent   0 to 1 adjusts the brightness from dark to full bright
+     */
+    fun setAppBrightness(context: Context, brightnessPercent: Float) {
+        scanForActivity(context)?.let {
+            val window = it.window
+            val layoutParams = window.attributes
+            layoutParams.screenBrightness = brightnessPercent
+            window.attributes = layoutParams
+        }
+    }
+
+    /**
+     * 获取当前页面亮度
+     * @return
+     */
+    fun getAppBrightness(context: Context): Float {
+        context?.let {
+            var brightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
+            if (context is Activity) {
+                val window = context.window
+                val layoutParams = window.attributes
+                brightness = layoutParams.screenBrightness
+            }
+            if (brightness == WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE) {
+                brightness = getSystemBrightness(it) / 255f
+            }
+            return brightness
+        }
+
+        return 0f
+    }
+
+    /**
+     * 获取系统亮度
+     */
+    fun getSystemBrightness(context: Context): Int {
+        return Settings.System.getInt(
+            context.contentResolver,
+            Settings.System.SCREEN_BRIGHTNESS,
+            255
+        )
+    }
+
+    /**
      * dp转px
      *
      * @param context
@@ -276,6 +324,7 @@ object VideoUtils {
             context.resources.displayMetrics
         ).toInt()
     }
+
 
     /**
      * 将毫秒数格式化为"##:##"的时间

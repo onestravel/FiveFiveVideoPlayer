@@ -1,7 +1,10 @@
 package cn.onestravel.fivefiveplayer.interf
 
+import android.view.View
 import cn.onestravel.fivefiveplayer.MediaDataSource
+import cn.onestravel.fivefiveplayer.OnDoubleClickListener
 import cn.onestravel.fivefiveplayer.impl.VideoDisplayTypeDef
+import cn.onestravel.fivefiveplayer.kernel.MediaKernelInterface
 import java.lang.Exception
 
 
@@ -200,4 +203,29 @@ interface PlayerInterface {
      */
     fun setVideoDisplayType(@VideoDisplayTypeDef displayType: Int)
 
+
+    /**
+     * 设置准备完成监听事件
+     */
+    fun setOnPreparedListener(onPreparedListener: OnPreparedListener)
+
+    /**
+     * 设置播放进度监听事件
+     */
+    fun setOnProgressListener(onProgressListener: OnProgressListener)
+
+    /**
+     * 设置播放完成监听事件
+     */
+    fun setOnCompleteListener(onCompleteListener: OnCompleteListener)
+
+    /**
+     * 设置播放异常监听事件
+     */
+    fun setOnErrorListener(onErrorListener: OnErrorListener)
+
+    /**
+     * 设置播放器媒体内核
+     */
+    fun setMediaKernel(mediaKernel: MediaKernelInterface)
 }

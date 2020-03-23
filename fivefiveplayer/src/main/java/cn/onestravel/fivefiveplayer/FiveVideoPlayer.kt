@@ -12,6 +12,7 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import cn.onestravel.fivefiveplayer.interf.*
+import cn.onestravel.fivefiveplayer.kernel.MediaKernelInterface
 import cn.onestravel.fivefiveplayer.utils.AnimationFromType
 import cn.onestravel.fivefiveplayer.utils.AnimationUtils
 import cn.onestravel.fivefiveplayer.utils.VideoUtils
@@ -140,29 +141,38 @@ class FiveVideoPlayer @JvmOverloads constructor(
     /**
      * 设置准备完成监听事件
      */
-    fun setOnPreparedListener(onPreparedListener: OnPreparedListener) {
+    override fun setOnPreparedListener(onPreparedListener: OnPreparedListener) {
         this.onPreparedListener = onPreparedListener;
     }
 
     /**
      * 设置播放进度监听事件
      */
-    fun setOnProgressListener(onProgressListener: OnProgressListener) {
+    override fun setOnProgressListener(onProgressListener: OnProgressListener) {
         this.onProgressListener = onProgressListener
     }
 
     /**
      * 设置播放完成监听事件
      */
-    fun setOnCompleteListener(onCompleteListener: OnCompleteListener) {
+    override fun setOnCompleteListener(onCompleteListener: OnCompleteListener) {
         this.onCompleteListener = onCompleteListener
     }
 
     /**
      * 设置播放异常监听事件
      */
-    fun setOnErrorListener(onErrorListener: OnErrorListener) {
+    override fun setOnErrorListener(onErrorListener: OnErrorListener) {
         this.onErrorListener = onErrorListener
+    }
+
+    /**
+     * 设置播放器内核
+     */
+    override fun setMediaKernel(mediaKernel: MediaKernelInterface) {
+        mFiveVideoView?.let {
+            it.setMediaKernel(mediaKernel)
+        }
     }
 
     fun setMediaController(controller: ControllerInterface?) {

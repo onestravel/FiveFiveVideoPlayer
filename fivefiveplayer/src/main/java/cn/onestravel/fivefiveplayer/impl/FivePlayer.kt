@@ -150,7 +150,12 @@ class FivePlayer {
      */
     fun seekTo(position: Long) {
         try {
-            mMediaKernel.seekTo(position)
+            if (mState != PlayerInterface.STATE_IDLE &&
+                mState != PlayerInterface.STATE_PREPARING &&
+                mState != PlayerInterface.STATE_ERROR
+            ) {
+                mMediaKernel.seekTo(position)
+            }
         } catch (e: java.lang.Exception) {
             LogHelper.e(TAG, "Five player seekTo error:", e)
         }
@@ -163,7 +168,12 @@ class FivePlayer {
      */
     fun getDuration(): Long {
         try {
-            return mMediaKernel.getDuration()
+            if (mState != PlayerInterface.STATE_IDLE &&
+                mState != PlayerInterface.STATE_PREPARING &&
+                mState != PlayerInterface.STATE_ERROR
+            ) {
+                return mMediaKernel.getDuration()
+            }
         } catch (e: java.lang.Exception) {
             LogHelper.e(TAG, "Five player getDuration error:", e)
         }
@@ -175,7 +185,12 @@ class FivePlayer {
      */
     fun getCurrentPosition(): Long {
         try {
-            return mMediaKernel.getCurrentPosition()
+            if (mState != PlayerInterface.STATE_IDLE &&
+                mState != PlayerInterface.STATE_PREPARING &&
+                mState != PlayerInterface.STATE_ERROR
+            ) {
+                return mMediaKernel.getCurrentPosition()
+            }
         } catch (e: java.lang.Exception) {
             LogHelper.e(TAG, "Five player getDuration error:", e)
         }
@@ -186,7 +201,18 @@ class FivePlayer {
      * 获取视频是否正在播放
      */
     fun isPlaying(): Boolean {
-        return mMediaKernel.isPlaying() && mState == PlayerInterface.STATE_PLAYING
+        var isPlaying = false
+        try {
+            if (mState != PlayerInterface.STATE_IDLE &&
+                mState != PlayerInterface.STATE_PREPARING &&
+                mState != PlayerInterface.STATE_ERROR
+            ) {
+                isPlaying = mMediaKernel.isPlaying()
+            }
+        } catch (e: java.lang.Exception) {
+            LogHelper.e(TAG, "Five player isPlaying error:", e)
+        }
+        return isPlaying && mState == PlayerInterface.STATE_PLAYING
     }
 
 
@@ -220,7 +246,11 @@ class FivePlayer {
      */
     fun setSpeed(speed: Float) {
         try {
-            mMediaKernel.setSpeed(speed)
+            if (mState != PlayerInterface.STATE_IDLE && mState != PlayerInterface.STATE_PREPARING
+                && mState != PlayerInterface.STATE_ERROR
+            ) {
+                mMediaKernel.setSpeed(speed)
+            }
         } catch (e: java.lang.Exception) {
             LogHelper.e(TAG, "Five player change speed error:", e)
         }

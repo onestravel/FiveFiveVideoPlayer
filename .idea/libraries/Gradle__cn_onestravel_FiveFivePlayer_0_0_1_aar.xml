@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="Gradle: cn.onestravel:FiveFivePlayer:0.0.1@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/1fdd0e8657dfb05a912ad02c12fca8dd/jetified-FiveFivePlayer-0.0.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/1fdd0e8657dfb05a912ad02c12fca8dd/jetified-FiveFivePlayer-0.0.1/res" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/cn.onestravel/FiveFivePlayer/0.0.1/7a624f6a8117966c0c6250d668aaf39e4a775d00/FiveFivePlayer-0.0.1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/cn.onestravel/FiveFivePlayer/0.0.1/7c9beb6d5476511226a48e2670b630f66bc26b81/FiveFivePlayer-0.0.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

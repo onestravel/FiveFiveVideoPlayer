@@ -3,7 +3,6 @@
     package="cn.onestravel.fivefiveplayer.demo">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission-sdk-23 android:name="android.permission.WRITE_SETTINGS" />
 
     <application
         android:allowBackup="true"
