@@ -1,4 +1,4 @@
-package cn.onestravel.fivefiveplayer.view
+package cn.onestravel.fivefiveplayer
 
 import android.content.Context
 import android.graphics.SurfaceTexture
@@ -11,12 +11,13 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.ProgressBar
-import cn.onestravel.fivefiveplayer.FivePlayer
-import cn.onestravel.fivefiveplayer.FiveVideoGestureListener
-import cn.onestravel.fivefiveplayer.R
-import cn.onestravel.fivefiveplayer.VideoDisplayTypeDef
+import cn.onestravel.fivefiveplayer.impl.FivePlayer
+import cn.onestravel.fivefiveplayer.impl.FiveVideoGestureListener
+import cn.onestravel.fivefiveplayer.impl.VideoDisplayTypeDef
 import cn.onestravel.fivefiveplayer.interf.*
+import cn.onestravel.fivefiveplayer.kernel.MediaKernelInterface
 import cn.onestravel.fivefiveplayer.utils.VideoUtils
+import cn.onestravel.fivefiveplayer.view.VideoTextureView
 import kotlin.math.abs
 
 
@@ -34,21 +35,16 @@ class FiveVideoView @JvmOverloads constructor(
     PlayerCallBack {
     private var mGestureViewType: Int = 0
     private var mVisibleResume: Boolean = false;
-    private val mTextureView: VideoTextureView by lazy { VideoTextureView(context) }
+    private val mTextureView: VideoTextureView by lazy {
+        VideoTextureView(
+            context
+        )
+    }
+    private val mGestureChangeContainer: FrameLayout by lazy { FrameLayout(context) }
     private val mPlayIv: ImageView by lazy { ImageView(context) }
     private val mThumbIv: ImageView by lazy { ImageView(context) }
     private val mLoadingBar: ProgressBar by lazy { ProgressBar(context) }
-    private val mGestureChangeContainer: FrameLayout by lazy { FrameLayout(context) }
     private val mPlayer: FivePlayer by lazy { FivePlayer() }
-    private var onPreparedListener: OnPreparedListener? = null
-    var onProgressListener: OnProgressListener? = null
-    var onCompleteListener: OnCompleteListener? = null
-    var onErrorListener: OnErrorListener? = null
-    private var onDoubleClickListener: OnDoubleClickListener? = null
-    private var onClickListener: OnClickListener? = null
-    private var mDoubleClickPlay: Boolean = true
-    private var mClickPlay: Boolean = false
-    private var mPlayerCallBack: PlayerCallBack? = null
     private val mTouchEventCountThread: TouchEventCountThread by lazy { TouchEventCountThread() }
     private val mVideoGestureListener: FiveVideoGestureListener by lazy {
         FiveVideoGestureListener(
@@ -61,6 +57,92 @@ class FiveVideoView @JvmOverloads constructor(
             context,
             mVideoGestureListener
         )
+    }
+
+    /**
+     * 设置是否允许双击播放/暂停
+     */
+    var doubleClickPlay: Boolean = true
+        set(value) {
+            field = value
+            if (value) {
+                clickPlay = false
+            }
+        }
+
+    /**
+     * 设置是否允许单击播放/暂停
+     */
+    var clickPlay: Boolean = false
+        set(value) {
+            field = value
+            if (value) {
+                doubleClickPlay = false
+            }
+        }
+
+    var gestureControlEnable = false
+    private var onClickListener: OnClickListener? = null
+    private var onDoubleClickListener: OnDoubleClickListener? = null
+    private var onPreparedListener: OnPreparedListener? = null
+    private var onProgressListener: OnProgressListener? = null
+    private var onCompleteListener: OnCompleteListener? = null
+    private var onErrorListener: OnErrorListener? = null
+    private var mPlayerCallBack: PlayerCallBack? = null
+
+
+    fun setPlayerCallback(playerCallBack: PlayerCallBack) {
+        this.mPlayerCallBack = playerCallBack
+    }
+
+    /**
+     * 设置点击监听事件
+     */
+    override fun setOnClickListener(l: OnClickListener?) {
+        this.onClickListener = l
+    }
+
+    /**
+     * 设置准备完成监听事件
+     */
+    fun setOnPreparedListener(onPreparedListener: OnPreparedListener) {
+        this.onPreparedListener = onPreparedListener;
+    }
+
+    /**
+     * 设置播放进度监听事件
+     */
+    fun setOnProgressListener(onProgressListener: OnProgressListener) {
+        this.onProgressListener = onProgressListener
+    }
+
+    /**
+     * 设置播放完成监听事件
+     */
+    fun setOnCompleteListener(onCompleteListener: OnCompleteListener) {
+        this.onCompleteListener = onCompleteListener
+    }
+
+    /**
+     * 设置播放异常监听事件
+     */
+    fun setOnErrorListener(onErrorListener: OnErrorListener) {
+        this.onErrorListener = onErrorListener
+    }
+
+    /**
+     * 设置双击监听事件
+     */
+    fun setOnDoubleClickListener(onDoubleClickListener: OnDoubleClickListener) {
+        this.onDoubleClickListener = onDoubleClickListener
+    }
+
+    /**
+     * 设置播放器媒体内核
+     */
+    fun setMediaKernel(mediaKernel: MediaKernelInterface) {
+        mPlayer.setMediaKernel(mediaKernel)
+        reset()
     }
 
     init {
@@ -110,6 +192,10 @@ class FiveVideoView @JvmOverloads constructor(
         mPlayer.setDataSource(url)
     }
 
+    override fun setDataSource(dataSource: MediaDataSource) {
+        mPlayer.setDataSource(dataSource)
+    }
+
     /**
      * 设置视频显示类型
      * @param type { #PlayerInterface#VIDEO_DISPLAY_TYPE_ADAPTER,
@@ -122,27 +208,14 @@ class FiveVideoView @JvmOverloads constructor(
         mTextureView.videoDisplayType = type
     }
 
-    /**
-     * 设置单击播放/暂停
-     */
-    fun setClickPlay(clickPlay: Boolean) {
-        this.mClickPlay = clickPlay
-        if (mClickPlay) {
-            mDoubleClickPlay = false
-        }
-    }
-
 
     /**
-     * 设置双击播放/暂停
+     * 显示手势控制改变的view
+     * @param type value in {FiveVideoGestureListener.GESTURE_MOTION_PROGRESS ,
+     *                       FiveVideoGestureListener.GESTURE_MOTION_VOLUME,
+     *                       FiveVideoGestureListener.GESTURE_MOTION_BRIGHT}
+     * @param view 改变播放器 音量/亮度/进度 的View
      */
-    fun setDoubleClickPlay(doubleClickPlay: Boolean) {
-        this.mDoubleClickPlay = doubleClickPlay
-        if (mDoubleClickPlay) {
-            mClickPlay = false
-        }
-    }
-
     fun showGestureChangeView(type: Int, view: View) {
         if (mGestureViewType != type) {
             mGestureChangeContainer.removeAllViews()
@@ -151,6 +224,9 @@ class FiveVideoView @JvmOverloads constructor(
         }
     }
 
+    /**
+     * 隐藏手势控制改变的View
+     */
     fun hideGestureChangeView() {
         mGestureChangeContainer.removeAllViews()
         mGestureChangeContainer.visibility = View.GONE
@@ -159,7 +235,6 @@ class FiveVideoView @JvmOverloads constructor(
 
     override fun start() {
         mPlayer.start()
-        mLoadingBar.visibility = View.VISIBLE
     }
 
     override fun start(position: Long) {
@@ -202,6 +277,14 @@ class FiveVideoView @JvmOverloads constructor(
 
     override fun isPlaying(): Boolean {
         return mPlayer.isPlaying()
+    }
+
+    override fun isPaused(): Boolean {
+        return mPlayer.isPaused()
+    }
+
+    override fun isCompletion(): Boolean {
+        return mPlayer.isCompletion()
     }
 
     override fun setVolume(leftVolume: Float, rightVolume: Float) {
@@ -265,6 +348,33 @@ class FiveVideoView @JvmOverloads constructor(
         }
     }
 
+    override fun onBufferingPaused() {
+        mPlayIv.visibility = View.VISIBLE
+        mThumbIv.visibility = View.GONE
+        mLoadingBar.visibility = View.VISIBLE
+        mPlayerCallBack?.let {
+            it.onBufferingPaused()
+        }
+    }
+
+    override fun onBufferingPlaying() {
+        mPlayIv.visibility = View.GONE
+        mThumbIv.visibility = View.GONE
+        mLoadingBar.visibility = View.VISIBLE
+        mPlayerCallBack?.let {
+            it.onBufferingPlaying()
+        }
+    }
+
+    override fun onPlaying() {
+        mPlayIv.visibility = View.GONE
+        mThumbIv.visibility = View.GONE
+        mLoadingBar.visibility = View.GONE
+        mPlayerCallBack?.let {
+            it.onPlaying()
+        }
+    }
+
     override fun onProgressChanged(total: Long, progress: Long) {
         mPlayIv.visibility = View.GONE
         mLoadingBar.visibility = View.GONE
@@ -309,25 +419,6 @@ class FiveVideoView @JvmOverloads constructor(
     }
 
 
-    fun setOnPreparedListener(onPreparedListener: OnPreparedListener) {
-        this.onPreparedListener = onPreparedListener
-    }
-
-
-    fun setOnDoubleClickListener(onDoubleClickListener: OnDoubleClickListener) {
-        this.onDoubleClickListener = onDoubleClickListener
-    }
-
-
-    fun setPlayerCallback(playerCallBack: PlayerCallBack) {
-        this.mPlayerCallBack = playerCallBack
-    }
-
-    override fun setOnClickListener(l: OnClickListener?) {
-        this.onClickListener = l
-    }
-
-
     private var downX: Float = 0f
     private var downY: Float = 0f
     private var moveX: Float = 0f
@@ -343,8 +434,8 @@ class FiveVideoView @JvmOverloads constructor(
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 if (0 == mTouchEventCountThread.touchCount) { // 第一次按下时,开始统计
-                    if (mDoubleClickPlay) {
-                        postDelayed(mTouchEventCountThread, 500)
+                    if (doubleClickPlay) {
+                        postDelayed(mTouchEventCountThread, 350)
                     } else {
                         post(mTouchEventCountThread)
                         return super.onTouchEvent(event)
@@ -370,18 +461,17 @@ class FiveVideoView @JvmOverloads constructor(
                         mTouchEventCountThread.touchCount = 0
                         mTouchEventCountThread.isLongClick = false
                     }
-                }else{
-                    hideGestureChangeView()
-                }
-                if (event.getAction() == MotionEvent.ACTION_UP) {
+                } else {
                     if (mVideoGestureListener.mGestureMotion == FiveVideoGestureListener.GESTURE_MOTION_PROGRESS) {
-//                        mListener.onSeek(mGestureProgress * 1000);
+                        mVideoGestureListener.onSeekCompletion()
                     }
+                    hideGestureChangeView()
+                    mVideoGestureListener.onActionUp()
+                }
 //                    mGestureMotion = 0;// 手指离开屏幕后，重置调节音量或进度的标志
 //                    gesture_volume_layout.setVisibility(View.GONE);
 //                    gesture_bright_layout.setVisibility(View.GONE);
 //                    gesture_progress_layout.setVisibility(View.GONE);
-                }
             }
             MotionEvent.ACTION_MOVE -> {
                 moveX += abs(event.x - downX);//X轴距离
@@ -393,15 +483,25 @@ class FiveVideoView @JvmOverloads constructor(
             else -> {
             }
         }
-        return gestureDetector.onTouchEvent(event);
+        return if (gestureControlEnable) {
+            gestureDetector.onTouchEvent(event);
+        } else {
+            true
+        }
     }
 
     private fun onDoubleClick() {
-        if (mDoubleClickPlay) {
-            if (isPlaying()) {
-                pause()
-            } else {
-                resume()
+        if (doubleClickPlay) {
+            when {
+                isPlaying() -> {
+                    pause()
+                }
+                isPaused() -> {
+                    resume()
+                }
+                else -> {
+                    start()
+                }
             }
         }
         onDoubleClickListener?.let {
@@ -410,7 +510,7 @@ class FiveVideoView @JvmOverloads constructor(
     }
 
     private fun onClick(v: View?) {
-        if (mClickPlay) {
+        if (clickPlay) {
             if (isPlaying()) {
                 pause()
             } else {

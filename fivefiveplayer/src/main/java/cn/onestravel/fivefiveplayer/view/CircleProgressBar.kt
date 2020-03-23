@@ -9,7 +9,9 @@ import cn.onestravel.fivefiveplayer.R
 import kotlin.math.floor
 
 /**
- * Created by wanghu on 2020/3/22
+ * @author onestravel
+ * @createTime 2020-03-22
+ * @description 圆形进度条
  */
 class CircleProgressBar : View {
 

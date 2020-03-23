@@ -8,7 +8,7 @@ import cn.onestravel.fivefiveplayer.interf.PlayerInterface
 /**
  * @author onestravel
  * @createTime 2020-02-11
- * @description TODO
+ * @description 视频播放TextureView
  */
 class VideoTextureView(context: Context?) : TextureView(context) {
     private var mVideoHeight = 0

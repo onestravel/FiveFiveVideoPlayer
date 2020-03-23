@@ -7,16 +7,16 @@
     <shape
         android:innerRadiusRatio="3"
         android:shape="ring"
-        android:thicknessRatio="8"
+        android:thicknessRatio="30"
         android:useLevel="false">
         <gradient
+            android:angle="0"
+            android:centerColor="#FFFFFF"
             android:centerY="0.50"
             android:endColor="#FFFFFF"
-            android:startColor="#00000000"
-            android:centerColor="#FFFFFF"
-            android:type="sweep"
-            android:angle="0"
             android:gradientRadius="200dp"
+            android:startColor="#00000000"
+            android:type="sweep"
             android:useLevel="false" />
     </shape>
 </animated-rotate>

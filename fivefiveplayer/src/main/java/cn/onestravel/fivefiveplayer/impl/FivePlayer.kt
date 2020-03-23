@@ -1,10 +1,11 @@
-package cn.onestravel.fivefiveplayer
+package cn.onestravel.fivefiveplayer.impl
 
 import android.graphics.SurfaceTexture
 import android.net.Uri
 import android.os.Build
 import android.os.Handler
 import androidx.annotation.RequiresApi
+import cn.onestravel.fivefiveplayer.MediaDataSource
 import cn.onestravel.fivefiveplayer.interf.PlayerCallBack
 import cn.onestravel.fivefiveplayer.interf.PlayerInterface
 import cn.onestravel.fivefiveplayer.kernel.MediaKernelInterface
@@ -15,10 +16,11 @@ import cn.onestravel.fivefiveplayer.view.VideoTextureView
 /**
  * @author onestravel
  * @createTime 2020-03-19
- * @description TODO
+ * @description 媒体内核处理类
  */
 class FivePlayer {
-    private var mUri: Uri? = null
+    private val TAG: String = javaClass.simpleName
+    private var mDataSource: MediaDataSource? = null
     private var mMediaKernel: MediaKernelInterface = MediaPlayerKernel(this)
     private var mState: Int = PlayerInterface.STATE_IDLE
     private var mPlayerCallBack: PlayerCallBack? = null
@@ -60,11 +62,22 @@ class FivePlayer {
      * 设置媒体源
      */
     fun setDataSource(url: String) {
-        mUri = Uri.parse(url)
-        mUri?.let {
-            val mediaDataSource =
+        val uri = Uri.parse(url)
+        uri?.let {
+            mDataSource =
                 MediaDataSource(it)
-            mMediaKernel.prepare(mediaDataSource)
+            mMediaKernel.prepare(this.mDataSource!!)
+            mState = PlayerInterface.STATE_PREPARING
+        }
+    }
+
+    /**
+     * 设置媒体源
+     */
+    fun setDataSource(dataSource: MediaDataSource) {
+        dataSource?.let {
+            mDataSource = it
+            mMediaKernel.prepare(it)
             mState = PlayerInterface.STATE_PREPARING
         }
     }
@@ -73,44 +86,62 @@ class FivePlayer {
      * 开始播放
      */
     fun start() {
-        mMediaKernel.start()
+        if (mState == PlayerInterface.STATE_PREPARED ||
+            mState == PlayerInterface.STATE_PAUSED ||
+            mState == PlayerInterface.STATE_COMPLETE
+        ) {
+            mMediaKernel.start()
+            onPlaying()
+        }
     }
 
     /**
      * 从指定位置开始播放
      */
     fun start(position: Long) {
-        mMediaKernel.start(position)
+        if (mState == PlayerInterface.STATE_PREPARED ||
+            mState == PlayerInterface.STATE_PAUSED ||
+            mState == PlayerInterface.STATE_COMPLETE
+        ) {
+            mMediaKernel.start(position)
+            onPlaying()
+        }
     }
 
     /**
      * 暂停播放
      */
     fun pause() {
-        mMediaKernel.pause()
-        onPaused()
+        if (mState == PlayerInterface.STATE_PLAYING ||
+            mState == PlayerInterface.STATE_BUFFERING_PLAYING
+        ) {
+            mMediaKernel.pause()
+            onPaused()
+        }
     }
 
     /**
      * 停止播放
      */
     fun stop() {
-        mMediaKernel.stop()
-        onStopped()
+        if (mState == PlayerInterface.STATE_PLAYING ||
+            mState == PlayerInterface.STATE_BUFFERING_PLAYING
+        ) {
+            mMediaKernel.stop()
+            onStopped()
+        }
     }
 
     /**
      * 继续播放
      */
     fun resume() {
-        mMediaKernel.resume()
-        onResume()
-        onPlaying()
-    }
-
-    private fun onResume() {
-        mPlayerCallBack?.let {
-            it.onResume()
+        if (mState == PlayerInterface.STATE_PAUSED ||
+            mState == PlayerInterface.STATE_BUFFERING_PAUSED
+        ) {
+            mMediaKernel.resume()
+            onResume()
+            onPlaying()
         }
     }
 
@@ -118,7 +149,12 @@ class FivePlayer {
      * 定位视频
      */
     fun seekTo(position: Long) {
-        mMediaKernel.seekTo(position)
+        try {
+            mMediaKernel.seekTo(position)
+        } catch (e: java.lang.Exception) {
+            LogHelper.e(TAG, "Five player seekTo error:", e)
+        }
+
     }
 
 
@@ -126,35 +162,68 @@ class FivePlayer {
      * 获取视频总时长
      */
     fun getDuration(): Long {
-        return mMediaKernel.getDuration()
+        try {
+            return mMediaKernel.getDuration()
+        } catch (e: java.lang.Exception) {
+            LogHelper.e(TAG, "Five player getDuration error:", e)
+        }
+        return 0
     }
 
     /**
      * 获取视频当前位置
      */
     fun getCurrentPosition(): Long {
-        return mMediaKernel.getCurrentPosition()
+        try {
+            return mMediaKernel.getCurrentPosition()
+        } catch (e: java.lang.Exception) {
+            LogHelper.e(TAG, "Five player getDuration error:", e)
+        }
+        return 0
     }
 
     /**
      * 获取视频是否正在播放
      */
     fun isPlaying(): Boolean {
-        return mMediaKernel.isPlaying()
+        return mMediaKernel.isPlaying() && mState == PlayerInterface.STATE_PLAYING
+    }
+
+
+    /**
+     * 获取视频是否正在暂停
+     */
+    fun isPaused(): Boolean {
+        return mState == PlayerInterface.STATE_PAUSED
+    }
+
+    /**
+     * 获取视频是否播放完成
+     */
+    fun isCompletion(): Boolean {
+        return mState == PlayerInterface.STATE_COMPLETE
     }
 
     /**
      * 设置播放器音量
      */
     fun setVolume(leftVolume: Float, rightVolume: Float) {
-        mMediaKernel.setVolume(leftVolume, rightVolume)
+        try {
+            mMediaKernel.setVolume(leftVolume, rightVolume)
+        } catch (e: java.lang.Exception) {
+            LogHelper.e(TAG, "Five player change volume error:", e)
+        }
     }
 
     /**
      * 设置播放器倍速
      */
     fun setSpeed(speed: Float) {
-        mMediaKernel.setSpeed(speed)
+        try {
+            mMediaKernel.setSpeed(speed)
+        } catch (e: java.lang.Exception) {
+            LogHelper.e(TAG, "Five player change speed error:", e)
+        }
     }
 
     /**
@@ -172,16 +241,24 @@ class FivePlayer {
      * 播放器重置
      */
     fun reset() {
-        mMediaKernel.reset()
-        mProgressHandler.removeCallbacks(mProgressTicker)
+        try {
+            mMediaKernel.reset()
+            mProgressHandler.removeCallbacks(mProgressTicker)
+        } catch (e: java.lang.Exception) {
+            LogHelper.e(TAG, "Five player reset error:", e)
+        }
     }
 
     /**
      * 播放器释放
      */
     fun release() {
-        mMediaKernel.release()
-        mProgressHandler.removeCallbacks(mProgressTicker)
+        try {
+            mMediaKernel.release()
+            mProgressHandler.removeCallbacks(mProgressTicker)
+        } catch (e: java.lang.Exception) {
+            LogHelper.e(TAG, "Five player release error:", e)
+        }
     }
 
     /**
@@ -229,11 +306,21 @@ class FivePlayer {
         }
     }
 
+    private fun onResume() {
+        mPlayerCallBack?.let {
+            it.onResume()
+        }
+    }
+
+
     /**
      * 缓冲播放
      */
     fun onBufferingPlaying() {
         mState = PlayerInterface.STATE_BUFFERING_PLAYING
+        mPlayerCallBack?.let {
+            it.onBufferingPlaying()
+        }
     }
 
     /**
@@ -242,6 +329,9 @@ class FivePlayer {
     fun onBufferingPaused() {
         mState = PlayerInterface.STATE_BUFFERING_PAUSED
         mProgressHandler.removeCallbacks(mProgressTicker)
+        mPlayerCallBack?.let {
+            it.onBufferingPaused()
+        }
     }
 
     /**
@@ -252,6 +342,7 @@ class FivePlayer {
         mProgressHandler.post(mProgressTicker)
         mPlayerCallBack?.let {
             it.onStart(false)
+            it.onPlaying()
         }
     }
 
@@ -275,7 +366,8 @@ class FivePlayer {
      * 缓冲更新回调
      */
     fun onBufferingUpdate(percent: Int) {
-
+        mPlayerCallBack?.let {
+        }
     }
 
     /**

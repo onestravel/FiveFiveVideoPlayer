@@ -9,13 +9,16 @@ import android.view.Surface
 import androidx.annotation.RequiresApi
 import cn.onestravel.fivefiveplayer.MediaDataSource
 import cn.onestravel.fivefiveplayer.utils.LogHelper
-import cn.onestravel.fivefiveplayer.FivePlayer
+import cn.onestravel.fivefiveplayer.impl.FivePlayer
 import cn.onestravel.fivefiveplayer.interf.PlayerInterface
 
+
 /**
- * Created by onestravel on 2020/3/19
+ * @author onestravel
+ * @createTime 2020-03-19
+ * @description MediaPlayer 播放器内核
  */
- class MediaPlayerKernel(private val player: FivePlayer) : MediaKernelApi(player),
+class MediaPlayerKernel(private val player: FivePlayer) : MediaKernelApi(player),
     MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener,
     MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnSeekCompleteListener,
     MediaPlayer.OnErrorListener, MediaPlayer.OnInfoListener,
@@ -40,7 +43,7 @@ import cn.onestravel.fivefiveplayer.interf.PlayerInterface
                 try {
                     mMediaPlayer.setDataSource(uri.toString())
                     mMediaPlayer.prepareAsync()
-                }catch (e:java.lang.Exception){
+                } catch (e: java.lang.Exception) {
                     player.onError(e)
                 }
             }
@@ -101,15 +104,15 @@ import cn.onestravel.fivefiveplayer.interf.PlayerInterface
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun setSpeed(speed: Float) {
-       val isPlay = isPlaying()
+        val isPlay = isPlaying()
         try {
             val pp: PlaybackParams = mMediaPlayer.playbackParams
             pp.speed = speed
             mMediaPlayer.playbackParams = pp
-            if(!isPlay){
+            if (!isPlay) {
                 pause()
             }
-        }catch (e:java.lang.Exception){
+        } catch (e: java.lang.Exception) {
             e.printStackTrace()
         }
 
@@ -187,7 +190,7 @@ import cn.onestravel.fivefiveplayer.interf.PlayerInterface
                 player.onPlaying()
                 LogHelper.i(TAG, "onInfo ——> MEDIA_INFO_BUFFERING_END： STATE_PLAYING")
             }
-            if (player.getState() == PlayerInterface.STATE_BUFFERING_PLAYING) {
+            if (player.getState() == PlayerInterface.STATE_BUFFERING_PAUSED) {
                 player.onPaused()
                 LogHelper.i(TAG, "onInfo ——> MEDIA_INFO_BUFFERING_END： STATE_PAUSED")
             }

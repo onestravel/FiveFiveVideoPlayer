@@ -1,6 +1,7 @@
 package cn.onestravel.fivefiveplayer.interf
 
-import cn.onestravel.fivefiveplayer.VideoDisplayTypeDef
+import cn.onestravel.fivefiveplayer.MediaDataSource
+import cn.onestravel.fivefiveplayer.impl.VideoDisplayTypeDef
 import java.lang.Exception
 
 
@@ -104,6 +105,11 @@ interface PlayerInterface {
     fun setDataSource(url: String)
 
     /**
+     * 设置资源
+     */
+    fun setDataSource(dataSource: MediaDataSource)
+
+    /**
      * 开始播放视频
      */
     fun start()
@@ -158,6 +164,16 @@ interface PlayerInterface {
      * 获取视频当前是否正在播放
      */
     fun isPlaying(): Boolean
+
+    /**
+     * 获取视频当前是否正在暂停
+     */
+    fun isPaused(): Boolean
+
+    /**
+     * 获取视频当前是否播放完成
+     */
+    fun isCompletion(): Boolean
 
     /**
      * 设置音量

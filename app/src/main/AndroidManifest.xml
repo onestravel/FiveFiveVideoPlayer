@@ -3,15 +3,16 @@
     package="cn.onestravel.fivefiveplayer.demo">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission-sdk-23 android:name="android.permission.WRITE_SETTINGS" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:usesCleartextTraffic="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,8 +21,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".FiveVideoViewActivity" />
-        <activity android:name=".FiveVideoPlayerActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"/>
     </application>
 
 </manifest>

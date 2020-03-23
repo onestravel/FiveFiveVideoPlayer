@@ -10,10 +10,13 @@ import android.view.*
 import android.widget.*
 import cn.onestravel.fivefiveplayer.R
 import cn.onestravel.fivefiveplayer.utils.VideoUtils
+import org.w3c.dom.Text
 
 
 /**
- * Created by wanghu on 2020/3/21
+ * @author onestravel
+ * @createTime 2020-03-21
+ * @description 选择器view
  */
 typealias OnSelectedCallback = (position: Int, selectedData: String) -> Unit
 
@@ -26,9 +29,8 @@ class SelectorPopView @JvmOverloads constructor(
 
     init {
         layoutParams = ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
-        val dw = Color.parseColor("#80000000")
-        setPadding(VideoUtils.dp2px(context, 30f), 0, VideoUtils.dp2px(context, 30f), 0)
-        setBackgroundColor(dw)
+        setPadding(VideoUtils.dp2px(context, 40f), 0, VideoUtils.dp2px(context, 40f), 0)
+        setBackgroundColor(resources.getColor(R.color.five_color_window_bg_color))
         val lp = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
         lp.gravity = Gravity.CENTER
         listView.layoutParams = lp
@@ -70,6 +72,16 @@ class SelectorPopView @JvmOverloads constructor(
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
             val view = super.getView(position, convertView, parent)
+            context?.let {
+                view.layoutParams = ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT,VideoUtils.dp2px(it,40f))
+                if (view is TextView) {
+                    if (datas.get(position) == selectData) {
+                        view.setTextColor(it.resources.getColor(R.color.five_color_select_color))
+                    } else {
+                        view.setTextColor(it.resources.getColor(R.color.five_color_default_color))
+                    }
+                }
+            }
             return view
         }
     }

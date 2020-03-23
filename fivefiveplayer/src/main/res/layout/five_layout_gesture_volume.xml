@@ -23,13 +23,13 @@
         android:layout_marginTop="20dp"
         app:maxProgress="100"
         app:strokeWidth="2dp"
-        app:startDegree="90"
+        app:startDegree="270"
         app:sweepDegree="360"
         app:radius="25dp"
         app:useGradient="true"
         app:capStyle="ROUND"
-        app:backColor="#88CCCCCC"
-        app:progressColor="#FFFFFF" />
+        app:backColor="@color/five_color_progress_bg_color"
+        app:progressColor="@color/five_color_progress_color" />
 
     <TextView
         android:id="@+id/five_view_volume_text"

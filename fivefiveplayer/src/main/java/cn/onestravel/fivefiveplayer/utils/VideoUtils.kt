@@ -2,6 +2,7 @@ package cn.onestravel.fivefiveplayer.utils
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.content.ContextWrapper
 import android.os.Build
@@ -21,6 +22,7 @@ import java.util.*
  */
 object VideoUtils {
     private var mSystemUiVisibilityPortrait: Int = -1
+    private var mActionBarIsShown: Boolean = false
 
     /**
      * Get activity from context object
@@ -55,16 +57,36 @@ object VideoUtils {
     }
 
     @SuppressLint("RestrictedApi")
-    fun showActionBar(context: Context?) {
-        val ab =
-            getAppCompActivity(context)!!.supportActionBar
-        if (ab != null) {
-            ab.setShowHideAnimationEnabled(false)
-            ab.show()
-        }
+    fun showActionBarAndStatusBar(context: Context?) {
+        showActionBar(context)
         scanForActivity(context)?.let {
             it.window
                 .clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        }
+
+    }
+
+
+    @SuppressLint("RestrictedApi")
+    fun hideActionBarAndStatusBar(context: Context?) {
+        hideActionBar(context)
+        scanForActivity(context)?.let {
+            it.window
+                .setFlags(
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN
+                )
+        }
+
+    }
+
+    @SuppressLint("RestrictedApi")
+    fun showActionBar(context: Context?) {
+        val ab =
+            getAppCompActivity(context)!!.supportActionBar
+        if (ab != null && mActionBarIsShown) {
+            ab.setShowHideAnimationEnabled(false)
+            ab.show()
         }
 
     }
@@ -75,17 +97,11 @@ object VideoUtils {
             getAppCompActivity(context)!!.supportActionBar
         if (ab != null) {
             ab.setShowHideAnimationEnabled(false)
+            mActionBarIsShown = ab.isShowing
             ab.hide()
         }
-        scanForActivity(context)?.let {
-            it.window
-                .setFlags(
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN
-                )
-        }
-
     }
+
 
     fun showBottomUIMenu(context: Context?) {
         //隐藏虚拟按键，并且全屏
@@ -171,6 +187,60 @@ object VideoUtils {
             window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
         }
 
+    }
+
+    fun setWindowStatusBarColor(activity: Activity, colorResId: Int) {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                val window = activity.window
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+                window.statusBarColor = activity.resources.getColor(colorResId)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun setWindowStatusBarColor(dialog: Dialog, colorResId: Int) {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                val window: Window? = dialog.getWindow()
+                window?.let {
+                    it.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+                    it.statusBarColor = dialog.getContext().getResources().getColor(colorResId)
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+
+    fun setNavigationBarColor(activity: Activity, colorResId: Int) {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                val window = activity.window
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+                //底部导航栏
+                window.navigationBarColor = activity.resources.getColor(colorResId);
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun setNavigationBarColor(dialog: Dialog, colorResId: Int) {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                val window: Window? = dialog.getWindow()
+                window?.let {
+                    it.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+                    it.navigationBarColor = dialog.context.resources.getColor(colorResId);
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     /**

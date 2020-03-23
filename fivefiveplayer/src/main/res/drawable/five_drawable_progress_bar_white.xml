@@ -5,8 +5,8 @@
         >
         <shape>
             <corners android:radius="50dp" />
-            <solid android:color="#00000000" />
-            <stroke android:width="2dp" android:color="#88CCCCCC"/>
+            <solid android:color="@color/five_color_transparent" />
+            <stroke android:width="2dp" android:color="@color/five_color_progress_bg_color"/>
         </shape>
     </item>
 
@@ -14,8 +14,8 @@
         <clip>
             <shape>
                 <corners android:radius="50dp" />
-                <solid android:color="#00000000" />
-                <stroke android:width="2dp" android:color="#55e1e1e1"/>
+                <solid android:color="@color/five_color_transparent" />
+                <stroke android:width="2dp" android:color="@color/five_color_secondary_progress_color"/>
             </shape>
         </clip>
     </item>
@@ -25,8 +25,8 @@
         <clip>
             <shape>
                 <corners android:radius="50dp" />
-                <solid android:color="#00000000" />
-                <stroke android:width="2dp" android:color="#FFFFFF"/>
+                <solid android:color="@color/five_color_transparent" />
+                <stroke android:width="2dp" android:color="@color/five_color_progress_color"/>
             </shape>
         </clip>
     </item>

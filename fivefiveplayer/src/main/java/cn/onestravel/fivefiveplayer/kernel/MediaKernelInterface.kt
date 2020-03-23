@@ -8,7 +8,7 @@ import cn.onestravel.fivefiveplayer.MediaDataSource
 /**
  * @author onestravel
  * @createTime 2020-03-19
- * @description 媒体播放内核接口
+ * @description 媒体播放内核API接口
 */
 interface MediaKernelInterface : TextureView.SurfaceTextureListener{
     /**

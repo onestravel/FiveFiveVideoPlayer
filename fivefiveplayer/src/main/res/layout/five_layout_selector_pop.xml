@@ -4,7 +4,7 @@
     android:layout_width="200dp"
     android:layout_height="match_parent"
     android:layout_alignParentRight="true"
-    android:background="#88000000"
+    android:background="@color/five_color_window_bg_color"
     android:paddingLeft="30dp"
     android:paddingRight="30dp">
 
@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:scrollbars="none"
-        android:divider="#FFF"
+        android:divider="@color/five_color_default_color"
         android:dividerHeight="1px"
         android:isScrollContainer="false" />
 </FrameLayout>

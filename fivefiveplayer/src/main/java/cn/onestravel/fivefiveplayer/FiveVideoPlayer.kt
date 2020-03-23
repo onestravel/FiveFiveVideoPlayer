@@ -1,4 +1,4 @@
-package cn.onestravel.fivefiveplayer.view
+package cn.onestravel.fivefiveplayer
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -6,13 +6,16 @@ import android.content.pm.ActivityInfo
 import android.graphics.SurfaceTexture
 import android.util.AttributeSet
 import android.view.*
+import android.view.animation.Animation
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
-import cn.onestravel.fivefiveplayer.FivePlayerController
-import cn.onestravel.fivefiveplayer.R
 import cn.onestravel.fivefiveplayer.interf.*
+import cn.onestravel.fivefiveplayer.utils.AnimationFromType
+import cn.onestravel.fivefiveplayer.utils.AnimationUtils
 import cn.onestravel.fivefiveplayer.utils.VideoUtils
+import cn.onestravel.fivefiveplayer.view.SelectorPopView
 
 
 /**
@@ -24,33 +27,68 @@ class FiveVideoPlayer @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr), PlayerInterface,
     PlayerCallBack, ControllerActionCallback {
+    private val HIDE_VIEW_SECOMDS: Long = 4 * 1000
     private var mFiveBackView: ImageView? = null
     private var mFiveTitleView: TextView? = null
     private var mPlayerState: Int = PlayerInterface.PLAYER_STATE_NORMAL
     private val mViewContainer: View by lazy {
         LayoutInflater.from(context).inflate(R.layout.five_layout_video_player, null)
     }
-    private val mSelectorView: SelectorPopView by lazy { SelectorPopView(context) }
-    private var mOnPreparedListener: OnPreparedListener? = null
+    private val mSelectorView: SelectorPopView by lazy {
+        SelectorPopView(
+            context
+        )
+    }
+    private val hideViewRunnable: Runnable by lazy { Runnable { hideTopActionBarView();hideControllerView() } }
     private var mBottomControllerView: FrameLayout? = null
+    private var mTopActionBarView: RelativeLayout?
     private var mRightSelectorView: FrameLayout? = null
     private var mFiveVideoView: FiveVideoView? = null
-    private var mController: ControllerInterface = FivePlayerController(context)
+    private var mController: ControllerInterface? = FivePlayerController(context)
+    private var onPreparedListener: OnPreparedListener? = null
+    private var onProgressListener: OnProgressListener? = null
+    private var onCompleteListener: OnCompleteListener? = null
+    private var onErrorListener: OnErrorListener? = null
+    var hideViewEnable: Boolean = true
+    var gestureControlEnable: Boolean = true
+        set(value) {
+            field = value
+            mFiveVideoView?.let {
+                it.gestureControlEnable = value
+            }
+        }
 
     init {
         mBottomControllerView =
             mViewContainer.findViewById<FrameLayout>(R.id.five_layout_bottom_controller)
+        mTopActionBarView =
+            mViewContainer.findViewById<RelativeLayout>(R.id.five_layout_top_action_bar)
         mRightSelectorView =
             mViewContainer.findViewById<FrameLayout>(R.id.five_layout_right_selector)
 
         mFiveVideoView = mViewContainer.findViewById(R.id.five_view_video_view)
-        setMediaController(mController)
+        mController?.let {
+            setMediaController(it)
+        }
         mFiveVideoView?.let {
+            gestureControlEnable = true
             it.setPlayerCallback(this)
             it.setOnClickListener {
-                mRightSelectorView?.let {
-                    if (it.visibility === View.VISIBLE) {
+                mRightSelectorView?.let { selectorView ->
+                    if (selectorView.visibility === View.VISIBLE) {
                         hideSelectorView()
+                    }
+                }
+                if (mRightSelectorView == null || mRightSelectorView!!.visibility != View.VISIBLE) {
+                    mTopActionBarView?.let { view ->
+                        if (view.visibility === View.VISIBLE) {
+                            hideTopActionBarView()
+                            hideControllerView()
+                        } else {
+                            showTopActionBarView()
+                            showControllerView()
+                            hideViewDelay()
+                        }
                     }
                 }
             }
@@ -80,11 +118,45 @@ class FiveVideoPlayer @JvmOverloads constructor(
         }
     }
 
-    fun setOnPreparedListener(onPreparedListener: OnPreparedListener) {
-        this.mOnPreparedListener = onPreparedListener
+    override fun setDataSource(dataSource: MediaDataSource) {
+        mFiveVideoView?.let {
+            it.setDataSource(dataSource)
+        }
+        mFiveTitleView?.let {
+            it.text = dataSource?.title ?: ""
+        }
+
     }
 
-    fun setMediaController(controller: ControllerInterface) {
+    /**
+     * 设置准备完成监听事件
+     */
+    fun setOnPreparedListener(onPreparedListener: OnPreparedListener) {
+        this.onPreparedListener = onPreparedListener;
+    }
+
+    /**
+     * 设置播放进度监听事件
+     */
+    fun setOnProgressListener(onProgressListener: OnProgressListener) {
+        this.onProgressListener = onProgressListener
+    }
+
+    /**
+     * 设置播放完成监听事件
+     */
+    fun setOnCompleteListener(onCompleteListener: OnCompleteListener) {
+        this.onCompleteListener = onCompleteListener
+    }
+
+    /**
+     * 设置播放异常监听事件
+     */
+    fun setOnErrorListener(onErrorListener: OnErrorListener) {
+        this.onErrorListener = onErrorListener
+    }
+
+    fun setMediaController(controller: ControllerInterface?) {
         this.mController = controller
         mController?.let {
             it.setActionCallBack(this)
@@ -156,6 +228,14 @@ class FiveVideoPlayer @JvmOverloads constructor(
         return mFiveVideoView?.isPlaying() ?: false
     }
 
+    override fun isPaused(): Boolean {
+        return mFiveVideoView?.isPaused() ?: false
+    }
+
+    override fun isCompletion(): Boolean {
+        return mFiveVideoView?.isCompletion() ?: false
+    }
+
     override fun setVolume(leftVolume: Float, rightVolume: Float) {
         mFiveVideoView?.let {
             it.setVolume(leftVolume, rightVolume)
@@ -183,37 +263,79 @@ class FiveVideoPlayer @JvmOverloads constructor(
     }
 
     override fun onPrepared() {
-        mController.setMaxProgress(getDuration())
-        mOnPreparedListener?.let {
+        mController?.setMaxProgress(getDuration())
+        onPreparedListener?.let {
             it.invoke(this)
         }
     }
 
     override fun onStart(first: Boolean) {
-        mController.onStart()
+        mController?.onStart()
+        if (isPlaying()) {
+            hideViewDelay()
+        }
     }
 
     override fun onStopped() {
     }
 
     override fun onPaused() {
-        mController.onPause()
+        mController?.onPause()
+        showTopActionBarView()
+        showControllerView()
     }
 
     override fun onResume() {
+        if (isPlaying()) {
+            hideViewDelay()
+        }
     }
 
     override fun onSeekTo(position: Long) {
+        mController?.setProgress(position, getDuration())
+        if (isPlaying()) {
+            hideViewDelay()
+        }
+    }
+
+    override fun onBufferingPaused() {
+
+    }
+
+    override fun onBufferingPlaying() {
+
+    }
+
+    override fun onPlaying() {
+        hideViewDelay()
+    }
+
+    private fun hideViewDelay() {
+        removeCallbacks(hideViewRunnable)
+        postDelayed(hideViewRunnable, HIDE_VIEW_SECOMDS)
     }
 
     override fun onProgressChanged(total: Long, progress: Long) {
-        mController.setProgress(progress, total)
+        mController?.setProgress(progress, total)
+        onProgressListener?.let {
+            it.invoke(progress, total)
+        }
     }
 
     override fun onCompletion() {
+        showTopActionBarView()
+        showControllerView()
+        onCompleteListener?.let {
+            it.invoke()
+        }
     }
 
     override fun onError(e: Exception) {
+        showTopActionBarView()
+        showControllerView()
+        onErrorListener?.let {
+            it.invoke(e)
+        }
     }
 
     override fun onVideoSizeChanged(width: Int, height: Int) {
@@ -224,7 +346,11 @@ class FiveVideoPlayer @JvmOverloads constructor(
     }
 
     override fun onActionPlay() {
-        resume()
+        if (isPaused()) {
+            resume()
+        } else {
+            start()
+        }
     }
 
     override fun onActionPause() {
@@ -281,10 +407,10 @@ class FiveVideoPlayer @JvmOverloads constructor(
     private fun _enterFullScreen(): Boolean {
         if (mPlayerState == PlayerInterface.PLAYER_STATE_NORMAL) {
             // 隐藏ActionBar、状态栏，并横屏
-            VideoUtils.hideActionBar(context)
+            VideoUtils.hideActionBarAndStatusBar(context)
             VideoUtils.hideBottomUIMenu(context)
             VideoUtils.scanForActivity(context)?.let {
-                it.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                it.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
                 removeView(mViewContainer)
                 val params = LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
@@ -292,7 +418,7 @@ class FiveVideoPlayer @JvmOverloads constructor(
                 )
                 it.findViewById<ViewGroup>(android.R.id.content)?.addView(mViewContainer, params)
                 mPlayerState = PlayerInterface.PLAYER_STATE_FULL_SCREEN
-                mController.onChangePlayerState(mPlayerState)
+                mController?.onChangePlayerState(mPlayerState)
                 return true
             }
         }
@@ -302,7 +428,7 @@ class FiveVideoPlayer @JvmOverloads constructor(
     @SuppressLint("SourceLockedOrientationActivity")
     private fun _exitFullScreen(): Boolean {
         if (mPlayerState === PlayerInterface.PLAYER_STATE_FULL_SCREEN) {
-            VideoUtils.showActionBar(context)
+            VideoUtils.showActionBarAndStatusBar(context)
             VideoUtils.showBottomUIMenu(context)
             VideoUtils.scanForActivity(context)?.let {
                 it.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -315,7 +441,7 @@ class FiveVideoPlayer @JvmOverloads constructor(
                 this.removeView(mViewContainer)
                 this.addView(mViewContainer, params)
                 mPlayerState = PlayerInterface.PLAYER_STATE_NORMAL
-                mController.onChangePlayerState(mPlayerState)
+                mController?.onChangePlayerState(mPlayerState)
                 return true
             }
         }
@@ -339,7 +465,7 @@ class FiveVideoPlayer @JvmOverloads constructor(
             params.bottomMargin = VideoUtils.dp2px(context, 8f)
             contentView.addView(mViewContainer, params)
             mPlayerState = PlayerInterface.PLAYER_STATE_TINY_WINDOW
-            mController.onChangePlayerState(mPlayerState)
+            mController?.onChangePlayerState(mPlayerState)
             return true
         }
         return false
@@ -357,7 +483,7 @@ class FiveVideoPlayer @JvmOverloads constructor(
                 )
                 this.addView(mViewContainer, params)
                 mPlayerState = PlayerInterface.PLAYER_STATE_TINY_WINDOW
-                mController.onChangePlayerState(mPlayerState)
+                mController?.onChangePlayerState(mPlayerState)
                 return true
             }
         }
@@ -383,15 +509,120 @@ class FiveVideoPlayer @JvmOverloads constructor(
         }
     }
 
-    private fun showSelectorView() {
-        mRightSelectorView?.let {
-            it.visibility = View.VISIBLE
+    /**
+     * 显示顶部标题栏
+     */
+    private fun showTopActionBarView() {
+        mTopActionBarView?.let {
+            if (it.visibility == View.GONE) {
+                it.visibility = View.VISIBLE
+                val anim = AnimationUtils.makeInAnimation(context, AnimationFromType.TOP)
+                anim.setAnimationListener(object : SimpleAnimationListener() {
+                    override fun onAnimationEnd(animation: Animation?) {
+
+                    }
+                })
+                it.animation = anim
+                anim.start()
+            }
         }
     }
 
+    /**
+     * 隐藏顶部标题栏
+     */
+    private fun hideTopActionBarView() {
+        if (!hideViewEnable) {
+            return
+        }
+        mTopActionBarView?.let {
+            if (it.visibility == View.VISIBLE) {
+                val anim = AnimationUtils.makeOutAnimation(context, AnimationFromType.TOP)
+                anim.setAnimationListener(object : SimpleAnimationListener() {
+                    override fun onAnimationEnd(animation: Animation?) {
+                        it.visibility = View.GONE
+                    }
+                })
+                it.animation = anim
+                anim.start()
+            }
+        }
+    }
+
+    /**
+     * 显示控制器View
+     */
+    private fun showControllerView() {
+        mBottomControllerView?.let {
+            if (it.visibility == View.GONE) {
+                it.visibility = View.VISIBLE
+                val anim = AnimationUtils.makeInAnimation(context, AnimationFromType.BOTTOM)
+                anim.setAnimationListener(object : SimpleAnimationListener() {
+                    override fun onAnimationEnd(animation: Animation?) {
+                        it.visibility = View.VISIBLE
+                    }
+                })
+                it.animation = anim
+                anim.start()
+            }
+        }
+    }
+
+    /**
+     * 隐藏控制器View
+     */
+    private fun hideControllerView() {
+        if (!hideViewEnable) {
+            return
+        }
+        mBottomControllerView?.let {
+            if (it.visibility == View.VISIBLE) {
+                val anim = AnimationUtils.makeOutAnimation(context, AnimationFromType.BOTTOM)
+                anim.setAnimationListener(object : SimpleAnimationListener() {
+                    override fun onAnimationEnd(animation: Animation?) {
+                        it.visibility = View.GONE
+                    }
+                })
+                it.animation = anim
+                anim.start()
+            }
+        }
+    }
+
+    /**
+     * 显示选择器view
+     */
+    private fun showSelectorView() {
+        mRightSelectorView?.let {
+            if (it.visibility == View.GONE) {
+                it.visibility = View.VISIBLE
+                val anim = AnimationUtils.makeInAnimation(context, AnimationFromType.RIGHT)
+                anim.setAnimationListener(object : SimpleAnimationListener() {
+                    override fun onAnimationEnd(animation: Animation?) {
+                        it.visibility = View.VISIBLE
+                    }
+                })
+                it.animation = anim
+                anim.start()
+            }
+        }
+    }
+
+    /**
+     * 隐藏选择器view
+     */
     private fun hideSelectorView() {
         mRightSelectorView?.let {
-            it.visibility = View.GONE
+            if (it.visibility == View.VISIBLE) {
+                val anim = AnimationUtils.makeOutAnimation(context, AnimationFromType.RIGHT)
+                anim.setAnimationListener(object : SimpleAnimationListener() {
+                    override fun onAnimationEnd(animation: Animation?) {
+                        it.visibility = View.GONE
+                    }
+                })
+                it.animation = anim
+                anim.start()
+            }
         }
     }
 
@@ -414,5 +645,6 @@ class FiveVideoPlayer @JvmOverloads constructor(
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
     }
+
 
 }

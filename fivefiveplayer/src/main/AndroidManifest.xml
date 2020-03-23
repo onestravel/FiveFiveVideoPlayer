@@ -1,5 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="cn.onestravel.fivefiveplayer">
+
     <uses-permission android:name="android.permission.INTERNET" />
+    <application>
+        <activity
+            android:name="cn.onestravel.fivefiveplayer.FiveVideoPlayerActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
+    </application>
 </manifest>

@@ -40,12 +40,12 @@ interface ControllerInterface {
     fun setRotation(rotation: Float)
 
     /**
-     * 当点击播放按钮时调用
+     * 当开始播放按时调用
      */
     fun onStart()
 
     /**
-     * 当点击暂停按钮时调用
+     * 当暂停播放时调用
      */
     fun onPause()
 

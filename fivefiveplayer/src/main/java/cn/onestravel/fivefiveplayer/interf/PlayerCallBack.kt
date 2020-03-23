@@ -39,6 +39,21 @@ interface PlayerCallBack {
      */
     fun onSeekTo(position: Long)
 
+    /**
+     * 缓存中，视频播放状态为暂停
+     */
+    fun onBufferingPaused()
+
+    /**
+     * 缓存中，视频播放状态为正在播放
+     */
+    fun onBufferingPlaying()
+
+    /**
+     * 视频正在播放
+     */
+    fun onPlaying()
+
 
     /**
      * 视频播放进度回调

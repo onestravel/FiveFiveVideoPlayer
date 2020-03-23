@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">@color/five_color_window_bg_color2</color>
+    <color name="five_color_select_color">#CEAE5C</color>
+    <color name="five_color_default_color">@android:color/white</color>
+    <color name="five_color_transparent">@android:color/transparent</color>
+    <color name="five_color_bg_color_black">@android:color/black</color>
+    <color name="five_color_window_bg_color">#88000000</color>
+    <color name="five_color_window_bg_color2">#aa333333</color>
+    <color name="five_color_progress_bg_color">#88CCCCCC</color>
+    <color name="five_color_progress_color">@android:color/white</color>
+    <color name="five_color_secondary_progress_color">#55e1e1e1</color>
+</resources>

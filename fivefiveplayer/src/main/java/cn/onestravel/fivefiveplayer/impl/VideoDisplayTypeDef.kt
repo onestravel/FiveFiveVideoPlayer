@@ -1,4 +1,4 @@
-package cn.onestravel.fivefiveplayer
+package cn.onestravel.fivefiveplayer.impl
 
 import androidx.annotation.IntDef
 import cn.onestravel.fivefiveplayer.interf.PlayerInterface
