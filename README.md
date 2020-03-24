@@ -8,13 +8,13 @@ FiveFivePlayer 是一个可以高度自定义的播放器，手势改变亮度�
 
 
 
-![竖屏效果](resources/screenshotcut/normal_screen.png)
+![竖屏效果](resources/screenshotcut/normal_screen.gif)
 
 竖屏效果
 
 
 
-![横屏效果](resources/screenshotcut/full_screen.png)
+![横屏效果](resources/screenshotcut/full_screen.gif)
 
 横屏效果
 
