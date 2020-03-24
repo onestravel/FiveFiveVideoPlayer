@@ -111,6 +111,7 @@ class FiveVideoPlayer @JvmOverloads constructor(
             }
         }
         addView(mViewContainer)
+        FivePlayer.registerPlayer(this)
     }
 
     override fun setDataSource(url: String) {
@@ -175,6 +176,9 @@ class FiveVideoPlayer @JvmOverloads constructor(
         }
     }
 
+    /**
+     * 设置视频播放控制器
+     */
     fun setMediaController(controller: ControllerInterface?) {
         this.mController = controller
         mController?.let {
@@ -230,9 +234,16 @@ class FiveVideoPlayer @JvmOverloads constructor(
     }
 
     override fun release() {
+        mBottomControllerView?.let {
+            it.removeAllViews()
+        }
+        mRightSelectorView?.let {
+            it.removeAllViews()
+        }
         mFiveVideoView?.let {
             it.release()
         }
+        FivePlayer.unRegisterPlayer(this)
     }
 
     override fun getDuration(): Long {
@@ -666,4 +677,11 @@ class FiveVideoPlayer @JvmOverloads constructor(
     }
 
 
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_BACK && mPlayerState != PlayerInterface.PLAYER_STATE_NORMAL) {
+            exitFullScreenOrTinyWindow()
+            return true
+        }
+        return super.onKeyDown(keyCode, event)
+    }
 }

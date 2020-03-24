@@ -57,7 +57,7 @@ interface ControllerInterface {
 
 
     /**
-     * 当播放器状态发生改变时调用
+     * 当播放器选择器选中时调用
      *
      */
     fun onSelectorSelected(obj: Any, selectData: String)
@@ -105,7 +105,7 @@ interface ControllerActionCallback {
 
 
     /**
-     * 当控制器更改清晰度时调用
+     * 当控制器展示选择器窗口时调用
      */
     fun onActionShowSelector(obj: Any, datas: Array<String>, selectedData: String)
 }

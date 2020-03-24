@@ -6,10 +6,9 @@ import android.media.MediaPlayer
 import android.media.PlaybackParams
 import android.os.Build
 import android.view.Surface
-import androidx.annotation.RequiresApi
 import cn.onestravel.fivefiveplayer.MediaDataSource
 import cn.onestravel.fivefiveplayer.utils.LogHelper
-import cn.onestravel.fivefiveplayer.impl.FivePlayer
+import cn.onestravel.fivefiveplayer.impl.FivePlayerImpl
 import cn.onestravel.fivefiveplayer.interf.PlayerInterface
 
 
@@ -18,7 +17,7 @@ import cn.onestravel.fivefiveplayer.interf.PlayerInterface
  * @createTime 2020-03-19
  * @description MediaPlayer 播放器内核
  */
-class MediaPlayerKernel(private val player: FivePlayer) : MediaKernelApi(player),
+class MediaPlayerKernel(private val player: FivePlayerImpl) : MediaKernelApi(player),
     MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener,
     MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnSeekCompleteListener,
     MediaPlayer.OnErrorListener, MediaPlayer.OnInfoListener,
@@ -102,20 +101,22 @@ class MediaPlayerKernel(private val player: FivePlayer) : MediaKernelApi(player)
         })
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun setSpeed(speed: Float) {
-        val isPlay = isPlaying()
         try {
-            val pp: PlaybackParams = mMediaPlayer.playbackParams
-            pp.speed = speed
-            mMediaPlayer.playbackParams = pp
-            if (!isPlay) {
-                pause()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val isPlay = isPlaying()
+                val pp: PlaybackParams = mMediaPlayer.playbackParams
+                pp.speed = speed
+                mMediaPlayer.playbackParams = pp
+                if (!isPlay) {
+                    pause()
+                }
+            }else{
+                LogHelper.e(TAG,"The current version does not support adjusting the double speed")
             }
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
         }
-
     }
 
     override fun setSurface(surface: Surface) {

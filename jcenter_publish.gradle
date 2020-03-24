@@ -60,6 +60,7 @@ propertiesProject.load(project.rootProject.file('project.properties').newDataInp
 version = propertiesProject.getProperty("project.version")
 group = propertiesProject.getProperty("project.groupId")
 def versionName = propertiesProject.getProperty("project.version")
+def versionDescription = propertiesProject.getProperty("project.versionDesc")
 def groupName = propertiesProject.getProperty("project.groupId")
 def projectRepo = propertiesProject.getProperty("project.repo")
 def artifact = propertiesProject.getProperty("project.artifact")
@@ -137,7 +138,7 @@ bintray {
         publicDownloadNumbers = true
         version {
             name = versionName
-            desc = projectDescription
+            desc = versionDescription
 //            gpg {
 //                sign = true //Determines whether to GPG sign the files. The default is false
 //                passphrase = properties.getProperty("bintray.gpg.password")

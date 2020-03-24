@@ -4,14 +4,14 @@ import android.graphics.SurfaceTexture
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.Looper
-import cn.onestravel.fivefiveplayer.impl.FivePlayer
+import cn.onestravel.fivefiveplayer.impl.FivePlayerImpl
 
 /**
  * @author onestravel
  * @createTime 2020-03-19
  * @description 播放器内核API
  */
-abstract class MediaKernelApi(player: FivePlayer) : MediaKernelInterface {
+abstract class MediaKernelApi(player: FivePlayerImpl) : MediaKernelInterface {
     protected val TAG = javaClass.simpleName
     protected var mSurfaceTexture: SurfaceTexture? = null
     private val mPlayerHandlerThread: HandlerThread by lazy { HandlerThread("FiveFivePlayer") }

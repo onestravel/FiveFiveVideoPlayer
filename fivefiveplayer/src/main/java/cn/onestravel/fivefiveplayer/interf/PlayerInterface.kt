@@ -93,9 +93,7 @@ interface PlayerInterface {
         const val VIDEO_DISPLAY_TYPE_CENTER_CROP = 3
 
 
-        /**
-         * 填充满裁切视频
-         */
+
         const val PLAYER_STATE_NORMAL = 11
         const val PLAYER_STATE_FULL_SCREEN = 12
         const val PLAYER_STATE_TINY_WINDOW = 13

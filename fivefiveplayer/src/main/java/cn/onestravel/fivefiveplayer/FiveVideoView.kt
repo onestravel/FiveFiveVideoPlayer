@@ -11,7 +11,7 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.ProgressBar
-import cn.onestravel.fivefiveplayer.impl.FivePlayer
+import cn.onestravel.fivefiveplayer.impl.FivePlayerImpl
 import cn.onestravel.fivefiveplayer.impl.FiveVideoGestureListener
 import cn.onestravel.fivefiveplayer.impl.VideoDisplayTypeDef
 import cn.onestravel.fivefiveplayer.interf.*
@@ -44,7 +44,7 @@ class FiveVideoView @JvmOverloads constructor(
     private val mPlayIv: ImageView by lazy { ImageView(context) }
     private val mThumbIv: ImageView by lazy { ImageView(context) }
     private val mLoadingBar: ProgressBar by lazy { ProgressBar(context) }
-    private val mPlayer: FivePlayer by lazy { FivePlayer() }
+    private val mPlayer: FivePlayerImpl by lazy { FivePlayerImpl() }
     private val mTouchEventCountThread: TouchEventCountThread by lazy { TouchEventCountThread() }
     private val mVideoGestureListener: FiveVideoGestureListener by lazy {
         FiveVideoGestureListener(
@@ -186,6 +186,7 @@ class FiveVideoView @JvmOverloads constructor(
         mPlayer.attachTextureView(mTextureView)
         mPlayer.setPlayerCallBack(this)
 //        super.setOnClickListener({})
+        FivePlayer.registerPlayer(this)
     }
 
     override fun setDataSource(url: String) {
@@ -265,6 +266,7 @@ class FiveVideoView @JvmOverloads constructor(
 
     override fun release() {
         mPlayer.release()
+        FivePlayer.unRegisterPlayer(this)
     }
 
 
