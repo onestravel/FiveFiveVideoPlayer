@@ -487,8 +487,8 @@ class FiveVideoPlayer @JvmOverloads constructor(
 
             // 小窗口的宽度为屏幕宽度的60%，长宽比默认为16:9，右边距、下边距为8dp。
             val params = LayoutParams(
-                (VideoUtils.getScreenWidth(context) * 0.6f) as Int,
-                (VideoUtils.getScreenWidth(context) * 0.6f * 9f / 16f) as Int
+                (VideoUtils.getScreenWidth(context) * 0.6f).toInt(),
+                (VideoUtils.getScreenWidth(context) * 0.6f * 9f / 16f) .toInt()
             )
             params.gravity = Gravity.BOTTOM or Gravity.END
             params.rightMargin = VideoUtils.dp2px(context, 8f)

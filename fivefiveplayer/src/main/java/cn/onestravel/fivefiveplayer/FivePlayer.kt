@@ -11,7 +11,7 @@ import java.util.*
  * @description 播放器全局配置
  */
 object FivePlayer {
-    private val mPlayerList: LinkedList<PlayerInterface> by lazy { LinkedList() }
+    private val mPlayerList: LinkedList<PlayerInterface> by lazy { LinkedList<PlayerInterface>() }
 
     /**
      * 播放器注册
