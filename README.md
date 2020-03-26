@@ -1,4 +1,4 @@
-# FiveFiveVideoPlayer 使用说明
+# [FiveFiveVideoPlayer](https://github.com/onestravel/FiveFiveVideoPlayer) 使用说明
 
 FiveFiveVideoPlayer 是一个可以高度自定义的播放器，手势改变亮度，音量，进度；支持调整倍速；可以轻松实现全屏视频播放，列表视频播放，小窗口视频播放
 
@@ -191,5 +191,16 @@ FiveVideoView ：视频播放的View，无控制栏，标题栏，可设置（�
 	4. 支持手势滑动调整音量，亮度，进度
 	
 	5. 支持自定义视频播放控制器，播放器内含默认视频控制器
+	
+## 温馨提示：
 
+在使用过程中，如遇到任何问题，可 添加 ``issues`` 或发送邮件至server@onestravel.cn说明相关问题，我在看到邮件第一时间，会针对相应问题进行沟通解决，谢谢支持！
 
+## License
+   Copyright 2020 onestravel
+   
+   Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+   
+   http://www.apache.org/licenses/LICENSE-2.0
+   
+   Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
