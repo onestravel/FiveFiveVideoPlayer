@@ -1,6 +1,6 @@
-# FiveFivePlayer 使用说明
+# FiveFiveVideoPlayer 使用说明
 
-FiveFivePlayer 是一个可以高度自定义的播放器，手势改变亮度，音量，进度；支持调整倍速；可以轻松实现全屏视频播放，列表视频播放，小窗口视频播放
+FiveFiveVideoPlayer 是一个可以高度自定义的播放器，手势改变亮度，音量，进度；支持调整倍速；可以轻松实现全屏视频播放，列表视频播放，小窗口视频播放
 
 
 ## 1. 效果示例
@@ -29,17 +29,17 @@ demo比较粗糙，请勿介意
 ![二维码](resources/apk/FiveFivePlayer_qr_code.png)
 ## 2. 快速集成
 
-> version: [![Download](https://api.bintray.com/packages/onestravel/fivefive/FiveFivePlayer/images/download.svg)](https://bintray.com/onestravel/fivefive/FiveFivePlayer)
+> version: [![Download](https://api.bintray.com/packages/onestravel/fivefive/FiveFiveVideoPlayer/images/download.svg)](https://bintray.com/onestravel/fivefive/FiveFiveVideoPlayer)
 
 #### 2.1 gradle 引入（$version 需要替换为上图对应的版本号）
 ```groovy
-    implementation 'cn.onestravel:FiveFivePlayer:$version'
+    implementation 'cn.onestravel:FiveFiveVideoPlayer:$version'
 ```
 
 例如：
 
 ```groovy
-    implementation 'cn.onestravel:FiveFivePlayer:1.0.0'
+    implementation 'cn.onestravel:FiveFiveVideoPlayer:1.0.0'
 ```
 
 #### 2.2 添加权限
