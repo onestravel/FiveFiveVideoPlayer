@@ -66,6 +66,7 @@ class FivePlayerImpl {
         uri?.let {
             mDataSource =
                 MediaDataSource(it)
+            mMediaKernel.release()
             mMediaKernel.prepare(this.mDataSource!!)
             mState = PlayerInterface.STATE_PREPARING
         }
@@ -77,6 +78,7 @@ class FivePlayerImpl {
     fun setDataSource(dataSource: MediaDataSource) {
         dataSource?.let {
             mDataSource = it
+            mMediaKernel.release()
             mMediaKernel.prepare(it)
             mState = PlayerInterface.STATE_PREPARING
         }
@@ -261,9 +263,7 @@ class FivePlayerImpl {
      */
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     fun setSurfaceTexture(surface: SurfaceTexture) {
-        mTextureView?.let {
-            it.surfaceTexture = surface
-        }
+        LogHelper.e("==================", "setSurfaceTexture")
         mPlayerCallBack?.let { it.onSetSurfaceTexture(surface) }
     }
 
@@ -272,8 +272,10 @@ class FivePlayerImpl {
      */
     fun reset() {
         try {
-            mMediaKernel.reset()
+            mState = PlayerInterface.STATE_IDLE
             mProgressHandler.removeCallbacks(mProgressTicker)
+            mMediaKernel.stop()
+            mMediaKernel.reset()
         } catch (e: java.lang.Exception) {
             LogHelper.e(TAG, "Five player reset error:", e)
         }
@@ -284,8 +286,10 @@ class FivePlayerImpl {
      */
     fun release() {
         try {
-            mMediaKernel.release()
+            mState = PlayerInterface.STATE_IDLE
             mProgressHandler.removeCallbacks(mProgressTicker)
+            mMediaKernel.stop()
+            mMediaKernel.release()
         } catch (e: java.lang.Exception) {
             LogHelper.e(TAG, "Five player release error:", e)
         }
@@ -371,7 +375,6 @@ class FivePlayerImpl {
         mState = PlayerInterface.STATE_PLAYING
         mProgressHandler.post(mProgressTicker)
         mPlayerCallBack?.let {
-            it.onStart(false)
             it.onPlaying()
         }
     }

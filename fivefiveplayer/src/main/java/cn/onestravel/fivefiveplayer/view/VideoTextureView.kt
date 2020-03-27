@@ -1,16 +1,18 @@
 package cn.onestravel.fivefiveplayer.view
 
 import android.content.Context
+import android.graphics.Color
 import android.view.TextureView
 import android.view.View
 import cn.onestravel.fivefiveplayer.interf.PlayerInterface
+import cn.onestravel.fivefiveplayer.utils.LogHelper
 
 /**
  * @author onestravel
  * @createTime 2020-02-11
  * @description 视频播放TextureView
  */
-class VideoTextureView(context: Context?) : TextureView(context) {
+open class VideoTextureView(context: Context?) : TextureView(context) {
     private var mVideoHeight = 0
     private var mVideoWidth = 0
      var videoDisplayType: Int = PlayerInterface.VIDEO_DISPLAY_TYPE_ADAPTER
@@ -41,6 +43,7 @@ class VideoTextureView(context: Context?) : TextureView(context) {
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+
         var widthMeasureSpec = widthMeasureSpec
         var heightMeasureSpec = heightMeasureSpec
         val viewRotation = rotation
@@ -146,8 +149,12 @@ class VideoTextureView(context: Context?) : TextureView(context) {
         setMeasuredDimension(width, height)
     }
 
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        LogHelper.e("==================", "onAttachedToWindow=" + this)
+    }
 
     init {
-        isOpaque = false
+        isOpaque = true
     }
 }

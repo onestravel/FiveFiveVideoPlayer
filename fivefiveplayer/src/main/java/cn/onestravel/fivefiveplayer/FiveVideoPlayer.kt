@@ -24,7 +24,7 @@ import cn.onestravel.fivefiveplayer.view.SelectorPopView
  * @createTime 2020-03-21
  * @description TODO
  */
-class FiveVideoPlayer @JvmOverloads constructor(
+open class FiveVideoPlayer @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr), PlayerInterface,
     PlayerCallBack, ControllerActionCallback {

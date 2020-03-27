@@ -1,6 +1,5 @@
 package cn.onestravel.fivefiveplayer.kernel
 
-import android.graphics.SurfaceTexture
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.media.PlaybackParams
@@ -17,16 +16,17 @@ import cn.onestravel.fivefiveplayer.interf.PlayerInterface
  * @createTime 2020-03-19
  * @description MediaPlayer 播放器内核
  */
-class MediaPlayerKernel(private val player: FivePlayerImpl) : MediaKernelApi(player),
+open class MediaPlayerKernel(player: FivePlayerImpl) : MediaKernelApi(player),
     MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener,
     MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnSeekCompleteListener,
     MediaPlayer.OnErrorListener, MediaPlayer.OnInfoListener,
     MediaPlayer.OnVideoSizeChangedListener {
-    private val mMediaPlayer: MediaPlayer by lazy { MediaPlayer() }
-    private var mDataSource: MediaDataSource? = null;
+    private var mMediaPlayer: MediaPlayer = MediaPlayer()
     override fun prepare(dataSource: MediaDataSource) {
-        this.mDataSource = dataSource;
+        super.prepare(dataSource)
+        mMediaPlayer = MediaPlayer()
         mSurfaceTexture?.let {
+            LogHelper.e("==================", "mSurfaceTexture=" + it)
             mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
             mMediaPlayer.isLooping = dataSource.isLooping
             mMediaPlayer.setOnPreparedListener(this)
@@ -37,7 +37,8 @@ class MediaPlayerKernel(private val player: FivePlayerImpl) : MediaKernelApi(pla
             mMediaPlayer.setOnErrorListener(this)
             mMediaPlayer.setOnInfoListener(this)
             mMediaPlayer.setOnVideoSizeChangedListener(this)
-            mMediaPlayer.setSurface(Surface(it))
+            mSurface = Surface(it)
+            mMediaPlayer.setSurface(mSurface)
             dataSource.uri?.let { uri ->
                 try {
                     mMediaPlayer.setDataSource(uri.toString())
@@ -80,7 +81,15 @@ class MediaPlayerKernel(private val player: FivePlayerImpl) : MediaKernelApi(pla
     }
 
     override fun release() {
-        mMediaPlayer.release()
+        super.release()
+        runThread(Runnable {
+            try {
+                mMediaPlayer.setSurface(null)
+            }catch (e:Exception){
+                e.printStackTrace()
+            }
+            mMediaPlayer.release()
+        })
     }
 
     override fun getDuration(): Long {
@@ -111,8 +120,8 @@ class MediaPlayerKernel(private val player: FivePlayerImpl) : MediaKernelApi(pla
                 if (!isPlay) {
                     pause()
                 }
-            }else{
-                LogHelper.e(TAG,"The current version does not support adjusting the double speed")
+            } else {
+                LogHelper.e(TAG, "The current version does not support adjusting the double speed")
             }
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
@@ -121,29 +130,6 @@ class MediaPlayerKernel(private val player: FivePlayerImpl) : MediaKernelApi(pla
 
     override fun setSurface(surface: Surface) {
         mMediaPlayer.setSurface(surface)
-    }
-
-    override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture?, width: Int, height: Int) {
-    }
-
-    override fun onSurfaceTextureUpdated(surface: SurfaceTexture?) {
-    }
-
-    override fun onSurfaceTextureDestroyed(surface: SurfaceTexture?): Boolean {
-        return false
-    }
-
-    override fun onSurfaceTextureAvailable(surface: SurfaceTexture?, width: Int, height: Int) {
-        if (mSurfaceTexture == null) {
-            mSurfaceTexture = surface
-            mDataSource?.let {
-                prepare(it)
-            }
-        } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                player.setSurfaceTexture(mSurfaceTexture!!)
-            }
-        }
     }
 
 

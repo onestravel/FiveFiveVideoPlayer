@@ -18,6 +18,7 @@ import cn.onestravel.fivefiveplayer.interf.*
 import cn.onestravel.fivefiveplayer.kernel.MediaKernelInterface
 import cn.onestravel.fivefiveplayer.utils.VideoUtils
 import cn.onestravel.fivefiveplayer.view.VideoTextureView
+import com.bumptech.glide.Glide
 import kotlin.math.abs
 
 
@@ -28,7 +29,7 @@ import kotlin.math.abs
  */
 typealias OnDoubleClickListener = (View) -> Unit
 
-class FiveVideoView @JvmOverloads constructor(
+open class FiveVideoView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr),
     PlayerInterface,
@@ -82,6 +83,8 @@ class FiveVideoView @JvmOverloads constructor(
         }
 
     var gestureControlEnable = false
+    var showPlayIconEnable = true
+    var showLoadingViewEnable = true
     private var onClickListener: OnClickListener? = null
     private var onDoubleClickListener: OnDoubleClickListener? = null
     private var onPreparedListener: OnPreparedListener? = null
@@ -146,7 +149,7 @@ class FiveVideoView @JvmOverloads constructor(
     }
 
     init {
-        val lpTextureView = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+        val lpTextureView = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
         lpTextureView.gravity = Gravity.CENTER
         mTextureView.layoutParams = lpTextureView
         addView(mTextureView)
@@ -162,7 +165,7 @@ class FiveVideoView @JvmOverloads constructor(
         lpIvPlay.gravity = Gravity.CENTER
         mPlayIv.layoutParams = lpIvPlay
         mPlayIv.setImageResource(R.drawable.drawable_five_icon_play)
-        mPlayIv.visibility = View.GONE
+        hidePlayIcon()
         addView(mPlayIv)
 
 
@@ -183,19 +186,29 @@ class FiveVideoView @JvmOverloads constructor(
         mGestureChangeContainer.visibility = View.GONE
         addView(mGestureChangeContainer)
 
-        mPlayer.attachTextureView(mTextureView)
         mPlayer.setPlayerCallBack(this)
 //        super.setOnClickListener({})
         FivePlayer.registerPlayer(this)
     }
 
+    override fun setPreviewImg(url: String) {
+        Glide.with(mThumbIv)
+            .load(url)
+    }
+
     override fun setDataSource(url: String) {
         mPlayer.setDataSource(url)
+        mPlayer.attachTextureView(mTextureView)
+        hideLoadingView()
+        hidePlayIcon()
     }
 
 
     override fun setDataSource(dataSource: MediaDataSource) {
         mPlayer.setDataSource(dataSource)
+        mPlayer.attachTextureView(mTextureView)
+        hideLoadingView()
+        hidePlayIcon()
     }
 
     /**
@@ -237,10 +250,14 @@ class FiveVideoView @JvmOverloads constructor(
 
     override fun start() {
         mPlayer.start()
+        hidePlayIcon()
+        showLoadingView()
     }
 
     override fun start(position: Long) {
         mPlayer.start(position)
+        hidePlayIcon()
+        showLoadingView()
     }
 
     override fun pause() {
@@ -260,7 +277,7 @@ class FiveVideoView @JvmOverloads constructor(
     }
 
     override fun reset() {
-        mPlayIv.visibility = View.VISIBLE
+        showPlayIcon()
         mPlayer.reset()
     }
 
@@ -304,8 +321,8 @@ class FiveVideoView @JvmOverloads constructor(
     }
 
     override fun onPrepared() {
-        mLoadingBar.visibility = View.GONE
-        mPlayIv.visibility = View.VISIBLE
+        hideLoadingView()
+        showPlayIcon()
         mPlayerCallBack?.let {
             it.onPrepared()
         }
@@ -315,31 +332,33 @@ class FiveVideoView @JvmOverloads constructor(
     }
 
     override fun onStart(first: Boolean) {
-        mPlayIv.visibility = View.GONE
+        hidePlayIcon()
         mThumbIv.visibility = View.GONE
-        mLoadingBar.visibility = View.GONE
+        hideLoadingView()
         mPlayerCallBack?.let {
             it.onStart(first)
         }
     }
 
+
     override fun onStopped() {
-        mPlayIv.visibility = View.VISIBLE
+        showPlayIcon()
         mPlayerCallBack?.let {
             it.onStopped()
         }
     }
 
+
     override fun onPaused() {
-        mPlayIv.visibility = View.VISIBLE
+        showPlayIcon()
         mPlayerCallBack?.let {
             it.onPaused()
         }
     }
 
     override fun onResume() {
-        mLoadingBar.visibility = View.GONE
-        mPlayIv.visibility = View.GONE
+        hideLoadingView()
+        hidePlayIcon()
         mPlayerCallBack?.let {
             it.onResume()
         }
@@ -352,35 +371,35 @@ class FiveVideoView @JvmOverloads constructor(
     }
 
     override fun onBufferingPaused() {
-        mPlayIv.visibility = View.VISIBLE
+        showPlayIcon()
         mThumbIv.visibility = View.GONE
-        mLoadingBar.visibility = View.VISIBLE
+        showLoadingView()
         mPlayerCallBack?.let {
             it.onBufferingPaused()
         }
     }
 
     override fun onBufferingPlaying() {
-        mPlayIv.visibility = View.GONE
+        hidePlayIcon()
         mThumbIv.visibility = View.GONE
-        mLoadingBar.visibility = View.VISIBLE
+        showLoadingView()
         mPlayerCallBack?.let {
             it.onBufferingPlaying()
         }
     }
 
     override fun onPlaying() {
-        mPlayIv.visibility = View.GONE
+        hidePlayIcon()
         mThumbIv.visibility = View.GONE
-        mLoadingBar.visibility = View.GONE
+        hideLoadingView()
         mPlayerCallBack?.let {
             it.onPlaying()
         }
     }
 
     override fun onProgressChanged(total: Long, progress: Long) {
-        mPlayIv.visibility = View.GONE
-        mLoadingBar.visibility = View.GONE
+        hidePlayIcon()
+        hideLoadingView()
         mPlayerCallBack?.let {
             it.onProgressChanged(total, progress)
         }
@@ -390,7 +409,7 @@ class FiveVideoView @JvmOverloads constructor(
     }
 
     override fun onCompletion() {
-        mPlayIv.visibility = View.VISIBLE
+        showPlayIcon()
         mPlayerCallBack?.let {
             it.onCompletion()
         }
@@ -417,7 +436,7 @@ class FiveVideoView @JvmOverloads constructor(
 
     override fun onSetSurfaceTexture(surface: SurfaceTexture) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-//            mTextureView.surfaceTexture = surface
+            mTextureView.surfaceTexture = surface
         }
     }
 
@@ -437,12 +456,7 @@ class FiveVideoView @JvmOverloads constructor(
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 if (0 == mTouchEventCountThread.touchCount) { // 第一次按下时,开始统计
-                    if (doubleClickPlay) {
-                        postDelayed(mTouchEventCountThread, 350)
-                    } else {
-                        post(mTouchEventCountThread)
-                        return super.onTouchEvent(event)
-                    }
+                    postDelayed(mTouchEventCountThread, 350)
                 }
                 downX = event.x//float DownX
                 downY = event.y//float DownY
@@ -453,7 +467,7 @@ class FiveVideoView @JvmOverloads constructor(
                 //判断是否继续传递信号
                 if ((moveX < 20 && moveY < 20)) {
                     mTouchEventCountThread.touchCount++
-                    if (mTouchEventCountThread.touchCount == 2) {
+                    if (!doubleClickPlay || mTouchEventCountThread.touchCount == 2) {
                         removeCallbacks(mTouchEventCountThread)
                         post(mTouchEventCountThread)
                     }
@@ -471,15 +485,10 @@ class FiveVideoView @JvmOverloads constructor(
                     hideGestureChangeView()
                     mVideoGestureListener.onActionUp()
                 }
-//                    mGestureMotion = 0;// 手指离开屏幕后，重置调节音量或进度的标志
-//                    gesture_volume_layout.setVisibility(View.GONE);
-//                    gesture_bright_layout.setVisibility(View.GONE);
-//                    gesture_progress_layout.setVisibility(View.GONE);
             }
             MotionEvent.ACTION_MOVE -> {
                 moveX += abs(event.x - downX);//X轴距离
                 moveY += abs(event.y - downY);//y轴距离
-
             }
             MotionEvent.ACTION_CANCEL -> {
             }
@@ -587,5 +596,27 @@ class FiveVideoView @JvmOverloads constructor(
                 pause()
             }
         }
+    }
+
+
+    private fun showPlayIcon() {
+        if (showPlayIconEnable) {
+            mPlayIv.visibility = View.VISIBLE
+        }
+    }
+
+    private fun hidePlayIcon() {
+        mPlayIv.visibility = View.GONE
+    }
+
+
+    private fun showLoadingView() {
+        if (showLoadingViewEnable) {
+            mLoadingBar.visibility = View.VISIBLE
+        }
+    }
+
+    private fun hideLoadingView() {
+        mLoadingBar.visibility = View.GONE
     }
 }

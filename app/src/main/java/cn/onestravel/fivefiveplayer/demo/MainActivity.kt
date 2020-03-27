@@ -21,7 +21,16 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
         btnFiveVideoPlayer.setOnClickListener {
-            FiveVideoPlayerActivity.start(this, path,"玩具总动员")
+            FiveVideoPlayerActivity.start(this, path, "玩具总动员")
         }
+        btnVideoList.setOnClickListener {
+            val intent = Intent(this@MainActivity, ListVideoActivity::class.java)
+            startActivity(intent)
+        }
+        btnTikTokList.setOnClickListener {
+            val intent = Intent(this@MainActivity, TikTokListActivity::class.java)
+            startActivity(intent)
+        }
+
     }
 }

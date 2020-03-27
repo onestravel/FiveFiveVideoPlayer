@@ -22,6 +22,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Five Video Player Demo" />
+
+        <Button
+            android:id="@+id/btnVideoList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="List Video" />
+
+        <Button
+            android:id="@+id/btnTikTokList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tik Tok List " />
     </LinearLayout>
 
 </ScrollView>

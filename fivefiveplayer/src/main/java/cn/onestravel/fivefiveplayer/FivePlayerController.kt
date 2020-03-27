@@ -16,7 +16,7 @@ import cn.onestravel.fivefiveplayer.view.SelectorPopView
  * @createTime 2020-03-21
  * @description 播放器控制器
  */
-class FivePlayerController(val context: Context) : ControllerInterface {
+open class FivePlayerController(val context: Context) : ControllerInterface {
     private var mPlayerState: Int = PlayerInterface.PLAYER_STATE_NORMAL
     protected val rootView: FrameLayout by lazy { FrameLayout(context) }
     private var normalControllerView: View? = null

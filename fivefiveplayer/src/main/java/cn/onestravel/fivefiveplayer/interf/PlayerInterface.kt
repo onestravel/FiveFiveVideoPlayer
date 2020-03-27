@@ -101,6 +101,10 @@ interface PlayerInterface {
     }
 
     /**
+     * 设置预览图
+     */
+    fun setPreviewImg(url: String)
+    /**
      * 设置资源
      */
     fun setDataSource(url: String)

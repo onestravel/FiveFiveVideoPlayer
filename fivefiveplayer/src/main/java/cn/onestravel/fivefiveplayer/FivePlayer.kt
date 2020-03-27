@@ -1,8 +1,6 @@
 package cn.onestravel.fivefiveplayer
 
-import cn.onestravel.fivefiveplayer.impl.FivePlayerConfig
 import cn.onestravel.fivefiveplayer.interf.PlayerInterface
-import java.lang.Exception
 import java.util.*
 
 /**
@@ -27,22 +25,26 @@ object FivePlayer {
      */
     fun unRegisterPlayer(player: PlayerInterface) {
         if (mPlayerList.contains(player)) {
-            try {
-                player.release()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
             mPlayerList.remove(player)
         }
     }
 
     /**
-     * 取消播放器注册
+     * 释放全部播放器View
      */
-    fun releaseAllViews() {
+    fun releaseAllVideos() {
         while (mPlayerList.size > 0) {
             val player: PlayerInterface = mPlayerList.first
-            unRegisterPlayer(player)
+            releaseVideo(player)
         }
+    }
+
+    /**
+     * 释放播放器View
+     */
+    private fun releaseVideo(player: PlayerInterface) {
+        player.stop()
+        player.release()
+        unRegisterPlayer(player)
     }
 }

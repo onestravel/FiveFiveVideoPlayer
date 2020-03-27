@@ -16,7 +16,7 @@ import java.lang.Exception
  * @createTime 2020-03-22
  * @description 视频播放器
  */
-class FiveVideoPlayerActivity : AppCompatActivity() {
+open class FiveVideoPlayerActivity : AppCompatActivity() {
     private var isPlaying: Boolean = false
     private var mediaDataSource: MediaDataSource? = null
 

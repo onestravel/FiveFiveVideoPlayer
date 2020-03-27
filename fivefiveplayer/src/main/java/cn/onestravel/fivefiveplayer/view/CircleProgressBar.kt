@@ -13,7 +13,7 @@ import kotlin.math.floor
  * @createTime 2020-03-22
  * @description 圆形进度条
  */
-class CircleProgressBar : View {
+open class CircleProgressBar : View {
 
     private var paint = Paint(Paint.ANTI_ALIAS_FLAG)
     private var strokeWidth: Float = 0f

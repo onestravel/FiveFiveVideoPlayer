@@ -20,7 +20,7 @@ import org.w3c.dom.Text
  */
 typealias OnSelectedCallback = (position: Int, selectedData: String) -> Unit
 
-class SelectorPopView @JvmOverloads constructor(
+open class SelectorPopView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
