@@ -194,6 +194,7 @@ open class FiveVideoView @JvmOverloads constructor(
     override fun setPreviewImg(url: String) {
         Glide.with(mThumbIv)
             .load(url)
+            .into(mThumbIv)
     }
 
     override fun setDataSource(url: String) {
