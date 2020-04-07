@@ -20,10 +20,10 @@ open class FiveVideoPlayerActivity : AppCompatActivity() {
     private var isPlaying: Boolean = false
     private var mediaDataSource: MediaDataSource? = null
 
-    companion object {
-        val VIDEO_PATH: String = "videoPath"
-        val VIDEO_TITLE: String = "videoTitle"
-        val VIDEO_LOOPING: String = "videoLooping"
+    companion object{
+        const val VIDEO_PATH: String = "videoPath"
+        const val VIDEO_TITLE: String = "videoTitle"
+        const val VIDEO_LOOPING: String = "videoLooping"
 
         fun start(context: Context, url: String) {
             start(context, url, "")
@@ -43,6 +43,8 @@ open class FiveVideoPlayerActivity : AppCompatActivity() {
             context.startActivity(intent)
         }
     }
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
