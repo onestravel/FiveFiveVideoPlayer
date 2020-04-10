@@ -39,7 +39,7 @@ demo比较粗糙，请勿介意
 例如：
 
 ```groovy
-    implementation 'cn.onestravel:FiveFiveVideoPlayer:1.0.0'
+    implementation 'cn.onestravel:FiveFiveVideoPlayer:1.0.1'
 ```
 
 #### 2.2 添加权限

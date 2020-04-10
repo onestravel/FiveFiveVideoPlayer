@@ -76,13 +76,13 @@ open class FiveVideoPlayer @JvmOverloads constructor(
             it.setPlayerCallback(this)
             it.setOnClickListener {
                 mRightSelectorView?.let { selectorView ->
-                    if (selectorView.visibility === View.VISIBLE) {
+                    if (selectorView.visibility == View.VISIBLE) {
                         hideSelectorView()
                     }
                 }
                 if (mRightSelectorView == null || mRightSelectorView!!.visibility != View.VISIBLE) {
                     mTopActionBarView?.let { view ->
-                        if (view.visibility === View.VISIBLE) {
+                        if (view.visibility == View.VISIBLE) {
                             hideTopActionBarView()
                             hideControllerView()
                         } else {
@@ -105,7 +105,7 @@ open class FiveVideoPlayer @JvmOverloads constructor(
         }
         setOnClickListener {
             mRightSelectorView?.let {
-                if (it.visibility === View.VISIBLE) {
+                if (it.visibility == View.VISIBLE) {
                     hideSelectorView()
                 }
             }
@@ -407,10 +407,10 @@ open class FiveVideoPlayer @JvmOverloads constructor(
 
     override fun onActionSetPlayerState(playerState: Int) {
         when {
-            playerState === PlayerInterface.PLAYER_STATE_FULL_SCREEN -> {
+            playerState == PlayerInterface.PLAYER_STATE_FULL_SCREEN -> {
                 enterFullScreen()
             }
-            playerState === PlayerInterface.PLAYER_STATE_TINY_WINDOW -> {
+            playerState == PlayerInterface.PLAYER_STATE_TINY_WINDOW -> {
                 enterTinyWindow()
             }
             else -> {
@@ -467,7 +467,7 @@ open class FiveVideoPlayer @JvmOverloads constructor(
 
     @SuppressLint("SourceLockedOrientationActivity")
     private fun _exitFullScreen(): Boolean {
-        if (mPlayerState === PlayerInterface.PLAYER_STATE_FULL_SCREEN) {
+        if (mPlayerState == PlayerInterface.PLAYER_STATE_FULL_SCREEN) {
             VideoUtils.showActionBarAndStatusBar(context)
             VideoUtils.showBottomUIMenu(context)
             VideoUtils.scanForActivity(context)?.let {
@@ -490,7 +490,7 @@ open class FiveVideoPlayer @JvmOverloads constructor(
 
 
     private fun _enterTinyWindow(): Boolean {
-        if (mPlayerState === PlayerInterface.PLAYER_STATE_TINY_WINDOW) return false
+        if (mPlayerState == PlayerInterface.PLAYER_STATE_TINY_WINDOW) return false
         removeView(mViewContainer)
         VideoUtils.scanForActivity(context)?.let {
             val contentView = it.findViewById(android.R.id.content) as ViewGroup
@@ -512,7 +512,7 @@ open class FiveVideoPlayer @JvmOverloads constructor(
     }
 
     private fun _exitTinyWindow(): Boolean {
-        if (mPlayerState === PlayerInterface.PLAYER_STATE_TINY_WINDOW) {
+        if (mPlayerState == PlayerInterface.PLAYER_STATE_TINY_WINDOW) {
             VideoUtils.scanForActivity(context)?.let {
                 val contentView = it
                     .findViewById(android.R.id.content) as ViewGroup

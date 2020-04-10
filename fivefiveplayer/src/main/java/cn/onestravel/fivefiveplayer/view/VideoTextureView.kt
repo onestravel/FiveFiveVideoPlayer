@@ -117,11 +117,11 @@ open class VideoTextureView(context: Context?) : TextureView(context) {
         }
 
         if (parentWidth != 0 && parentHeight != 0 && mVideoWidth != 0 && mVideoHeight != 0) {
-            if (videoDisplayType === PlayerInterface.VIDEO_DISPLAY_TYPE_ORIGINAL) {
+            if (videoDisplayType == PlayerInterface.VIDEO_DISPLAY_TYPE_ORIGINAL) {
                 /**原图 */
                 height = mVideoHeight
                 width = mVideoWidth
-            } else if (videoDisplayType === PlayerInterface.VIDEO_DISPLAY_TYPE_FIT_CENTER) {
+            } else if (videoDisplayType == PlayerInterface.VIDEO_DISPLAY_TYPE_FIT_CENTER) {
                 /**保持原比例，填充至某一边达到最大宽度*/
                 if (parentWidth.toDouble() / mVideoWidth > parentHeight.toDouble() / mVideoHeight) {
                     (parentWidth.toDouble() / width.toDouble() * height.toDouble()).toInt()
@@ -133,7 +133,7 @@ open class VideoTextureView(context: Context?) : TextureView(context) {
                     height =
                         (parentWidth.toDouble() * mVideoHeight.toDouble() / mVideoWidth.toDouble()).toInt()
                 }
-            } else if (videoDisplayType === PlayerInterface.VIDEO_DISPLAY_TYPE_CENTER_CROP) {
+            } else if (videoDisplayType == PlayerInterface.VIDEO_DISPLAY_TYPE_CENTER_CROP) {
                 /**保持原比例，填充满后中心裁剪*/
                 if (mVideoHeight.toDouble() / mVideoWidth > parentHeight.toDouble() / parentWidth) {
                     height =

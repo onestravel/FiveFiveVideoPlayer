@@ -169,7 +169,7 @@ class FiveVideoGestureListener(val mContext: Context, val fiveVideoView: FiveVid
             }
         }
         // 如果每次触摸屏幕后第一次scroll是调节进度，那之后的scroll事件都处理音量进度，直到离开屏幕执行下一次操作
-        if (mGestureMotion === GESTURE_MOTION_PROGRESS) {
+        if (mGestureMotion == GESTURE_MOTION_PROGRESS) {
             // distanceX=lastScrollPositionX-currentScrollPositionX，因此为正时是快进
             if (Math.abs(distanceX) > Math.abs(distanceY)) { // 横向移动大于纵向移动
                 val duration: Long = fiveVideoView.getDuration()
@@ -204,7 +204,7 @@ class FiveVideoGestureListener(val mContext: Context, val fiveVideoView: FiveVid
                 )
 //                LogHelper.i(TAG, "progress= $progress%")
             }
-        } else if (mGestureMotion === GESTURE_MOTION_VOLUME) {
+        } else if (mGestureMotion == GESTURE_MOTION_VOLUME) {
 //
             if (Math.abs(distanceY) > Math.abs(distanceX)) { // 纵向移动大于横向移动
                 if (distanceY >= 1) { // 音量调大,注意横屏时的坐标体系,尽管左上角是原点，但横向向上滑动时distanceY为正
@@ -237,7 +237,7 @@ class FiveVideoGestureListener(val mContext: Context, val fiveVideoView: FiveVid
                 mAudiomanager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume.toInt(), 0)
                 fiveVideoView.showGestureChangeView(GESTURE_MOTION_VOLUME, mGestureVolumeLayout)
             }
-        } else if (mGestureMotion === GESTURE_MOTION_BRIGHT) {
+        } else if (mGestureMotion == GESTURE_MOTION_BRIGHT) {
 //            ivGestureBright!!.setImageResource(R.drawable.player_bright)
             try {
                 mBrightness = (VideoUtils.getAppBrightness(mContext) * 255).toInt()

@@ -26,7 +26,7 @@ import java.lang.reflect.Constructor
 class FivePlayerImpl(val context: Context) {
     private val TAG: String = javaClass.simpleName
     private var mDataSource: MediaDataSource? = null
-    private var mMediaKernel: MediaKernelInterface = newInstance(FivePlayer.mediaKernelClazz)
+    private var mMediaKernel: MediaKernelInterface = newInstance(FivePlayer.mediaKernelClass)
     private var mState: Int = PlayerInterface.STATE_IDLE
     private var mPlayerCallBack: PlayerCallBack? = null
     private var mTextureView: VideoTextureView? = null
