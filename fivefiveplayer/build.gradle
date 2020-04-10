@@ -8,7 +8,7 @@ android {
     buildToolsVersion "29.0.2"
 
     defaultConfig {
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 29
         versionCode 100
         versionName "1.0.0"
@@ -31,4 +31,16 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'com.github.bumptech.glide:glide:4.11.0'
+    /**    IJKPlayer dependencies start  **/
+    //    # required, enough for most devices.
+    api 'tv.danmaku.ijk.media:ijkplayer-java:0.8.8'
+    api 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.8.8'
+//    # Other ABIs: optional
+    api 'tv.danmaku.ijk.media:ijkplayer-armv5:0.8.8'
+    api 'tv.danmaku.ijk.media:ijkplayer-x86:0.8.8'
+    /**    IJKPlayer dependencies end  **/
+
+    /**    ExoPlayer dependencies start  **/
+    api 'com.google.android.exoplayer:exoplayer:2.11.4'
+    /**    ExoPlayer dependencies end  **/
 }

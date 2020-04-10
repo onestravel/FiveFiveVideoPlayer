@@ -40,12 +40,20 @@ open abstract class MediaKernelApi(protected val player: FivePlayerImpl) : Media
         mMainHandler.postDelayed(runnable, delayMillis)
     }
 
+    fun removeUiCallbacks(runnable: Runnable){
+        mMainHandler.removeCallbacks(runnable)
+    }
+
     fun runThread(runnable: Runnable) {
         mPlayerHandler.post(runnable)
     }
 
     fun runThread(runnable: Runnable, delayMillis: Long) {
         mPlayerHandler.postDelayed(runnable, delayMillis)
+    }
+
+    fun removeThreadCallbacks(runnable: Runnable){
+        mPlayerHandler.removeCallbacks(runnable)
     }
 
     override fun prepare(dataSource: MediaDataSource) {

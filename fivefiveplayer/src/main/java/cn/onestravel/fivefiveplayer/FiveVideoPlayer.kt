@@ -12,7 +12,7 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import cn.onestravel.fivefiveplayer.interf.*
-import cn.onestravel.fivefiveplayer.kernel.MediaKernelInterface
+import cn.onestravel.fivefiveplayer.kernel.MediaKernelApi
 import cn.onestravel.fivefiveplayer.utils.AnimationFromType
 import cn.onestravel.fivefiveplayer.utils.AnimationUtils
 import cn.onestravel.fivefiveplayer.utils.VideoUtils
@@ -114,6 +114,12 @@ open class FiveVideoPlayer @JvmOverloads constructor(
         FivePlayer.registerPlayer(this)
     }
 
+    override fun setPreviewImg(url: String) {
+        mFiveVideoView?.let {
+            it.setPreviewImg(url)
+        }
+    }
+
     override fun setDataSource(url: String) {
         mFiveVideoView?.let {
             it.setDataSource(url)
@@ -170,9 +176,9 @@ open class FiveVideoPlayer @JvmOverloads constructor(
     /**
      * 设置播放器内核
      */
-    override fun setMediaKernel(mediaKernel: MediaKernelInterface) {
+    override fun setMediaKernelClass(clazz:Class<out MediaKernelApi>) {
         mFiveVideoView?.let {
-            it.setMediaKernel(mediaKernel)
+            it.setMediaKernelClass(clazz)
         }
     }
 
@@ -307,6 +313,7 @@ open class FiveVideoPlayer @JvmOverloads constructor(
     }
 
     override fun onStopped() {
+        mController?.onPause()
     }
 
     override fun onPaused() {
@@ -316,6 +323,7 @@ open class FiveVideoPlayer @JvmOverloads constructor(
     }
 
     override fun onResume() {
+        mController?.onStart()
         if (isPlaying()) {
             hideViewDelay()
         }
@@ -337,6 +345,7 @@ open class FiveVideoPlayer @JvmOverloads constructor(
     }
 
     override fun onPlaying() {
+        mController?.onStart()
         hideViewDelay()
     }
 
@@ -353,6 +362,7 @@ open class FiveVideoPlayer @JvmOverloads constructor(
     }
 
     override fun onCompletion() {
+        mController?.onPause()
         showTopActionBarView()
         showControllerView()
         onCompleteListener?.let {
@@ -549,7 +559,7 @@ open class FiveVideoPlayer @JvmOverloads constructor(
                 val anim = AnimationUtils.makeInAnimation(context, AnimationFromType.TOP)
                 anim.setAnimationListener(object : SimpleAnimationListener() {
                     override fun onAnimationEnd(animation: Animation?) {
-
+                        it.clearAnimation()
                     }
                 })
                 it.animation = anim
@@ -570,6 +580,7 @@ open class FiveVideoPlayer @JvmOverloads constructor(
                 val anim = AnimationUtils.makeOutAnimation(context, AnimationFromType.TOP)
                 anim.setAnimationListener(object : SimpleAnimationListener() {
                     override fun onAnimationEnd(animation: Animation?) {
+                        it.clearAnimation()
                         it.visibility = View.GONE
                     }
                 })
@@ -589,6 +600,7 @@ open class FiveVideoPlayer @JvmOverloads constructor(
                 val anim = AnimationUtils.makeInAnimation(context, AnimationFromType.BOTTOM)
                 anim.setAnimationListener(object : SimpleAnimationListener() {
                     override fun onAnimationEnd(animation: Animation?) {
+                        it.clearAnimation()
                         it.visibility = View.VISIBLE
                     }
                 })
@@ -610,6 +622,7 @@ open class FiveVideoPlayer @JvmOverloads constructor(
                 val anim = AnimationUtils.makeOutAnimation(context, AnimationFromType.BOTTOM)
                 anim.setAnimationListener(object : SimpleAnimationListener() {
                     override fun onAnimationEnd(animation: Animation?) {
+                        it.clearAnimation()
                         it.visibility = View.GONE
                     }
                 })
@@ -629,6 +642,7 @@ open class FiveVideoPlayer @JvmOverloads constructor(
                 val anim = AnimationUtils.makeInAnimation(context, AnimationFromType.RIGHT)
                 anim.setAnimationListener(object : SimpleAnimationListener() {
                     override fun onAnimationEnd(animation: Animation?) {
+                        it.clearAnimation()
                         it.visibility = View.VISIBLE
                     }
                 })
@@ -647,11 +661,16 @@ open class FiveVideoPlayer @JvmOverloads constructor(
                 val anim = AnimationUtils.makeOutAnimation(context, AnimationFromType.RIGHT)
                 anim.setAnimationListener(object : SimpleAnimationListener() {
                     override fun onAnimationEnd(animation: Animation?) {
+                        it.clearAnimation()
                         it.visibility = View.GONE
                     }
                 })
                 it.animation = anim
-                anim.start()
+                it.animation.start()
+                it.postDelayed({
+                    it.clearAnimation()
+                    it.visibility = View.GONE
+                },200)
             }
         }
     }

@@ -1,7 +1,7 @@
 package cn.onestravel.fivefiveplayer.demo;
 
 /**
- * Created by wanghu on 2020/3/16
+ * Created by onestravel on 2020/3/16
  */
 public interface OnPagerListener {
 

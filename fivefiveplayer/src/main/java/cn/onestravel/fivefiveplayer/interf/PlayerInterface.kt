@@ -4,6 +4,7 @@ import android.view.View
 import cn.onestravel.fivefiveplayer.MediaDataSource
 import cn.onestravel.fivefiveplayer.OnDoubleClickListener
 import cn.onestravel.fivefiveplayer.impl.VideoDisplayTypeDef
+import cn.onestravel.fivefiveplayer.kernel.MediaKernelApi
 import cn.onestravel.fivefiveplayer.kernel.MediaKernelInterface
 import java.lang.Exception
 
@@ -227,7 +228,7 @@ interface PlayerInterface {
     fun setOnErrorListener(onErrorListener: OnErrorListener)
 
     /**
-     * 设置播放器媒体内核
+     * 设置播放器媒体内核class
      */
-    fun setMediaKernel(mediaKernel: MediaKernelInterface)
+    fun setMediaKernelClass(clazz:Class<out MediaKernelApi>)
 }

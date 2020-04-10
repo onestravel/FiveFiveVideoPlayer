@@ -77,7 +77,7 @@ open class FiveVideoPlayerActivity : AppCompatActivity() {
         }
         mediaDataSource = MediaDataSource(title, Uri.parse(path), looping)
         fiveVideoPlayer.setOnPreparedListener {
-            it.start()
+//            it.start()
             it.setVideoDisplayType(PlayerInterface.VIDEO_DISPLAY_TYPE_FIT_CENTER)
         }
         mediaDataSource?.let {

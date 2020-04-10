@@ -31,7 +31,7 @@
 | setOnProgressListener() | onProgressListener: OnProgressListener | void | 设置播放进度监听事件 | V 1.0.0 |
 | setOnCompleteListener() | onCompleteListener: OnCompleteListener | void | 设置播放完成监听事件 | V 1.0.0 |
 | setOnErrorListener() | onErrorListener: OnErrorListener | void | 设置播放异常监听事件 | V 1.0.0 |
-| setMediaKernel() | mediaKernel: MediaKernelInterface | void | 设置播放器媒体内核 | V 1.0.0 |
+| setMediaKernelClass() | clazz:Class<out MediaKernelApi> | void | 设置播放器媒体内核,参数为内核类class,必须是MediaKernelApi的子类 | V 1.0.1 |
 
 ## 2. 控制器统一开发API ``ControllerInterface``
 > * 注：在``FiveVideoPlayer``基础上实现自定义控制器View时，可以实现该接口类，来实现有视频播放器状态和播放进度反应到控制器上；实现``ControllerActionCallback``接口类，将控制器对应操作回调至播放器类，进行对应的操作（播放/暂停/seekTo/设置倍速等）

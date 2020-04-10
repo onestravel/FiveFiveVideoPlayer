@@ -11,7 +11,7 @@ import java.util.List;
 import cn.onestravel.fivefiveplayer.demo.common.BaseRecyclerAdapter;
 
 /**
- * Created by wanghu on 2019-10-30
+ * Created by onestravel on 2019-10-30
  */
 public class ListVideoAdapter extends BaseRecyclerAdapter<String> {
     private static String TAG = ListVideoAdapter.class.getSimpleName();

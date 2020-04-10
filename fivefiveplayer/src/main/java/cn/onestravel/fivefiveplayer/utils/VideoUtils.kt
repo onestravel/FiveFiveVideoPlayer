@@ -5,6 +5,8 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.ContextWrapper
+import android.media.MediaDataSource
+import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.util.TypedValue
@@ -358,16 +360,19 @@ object VideoUtils {
      */
     fun savePlayPosition(
         context: Context,
-        url: String?,
-        position: Int
+        uri: Uri?,
+        position: Long
     ) {
-        context.getSharedPreferences(
-                "NICE_VIDEO_PALYER_PLAY_POSITION",
-                Context.MODE_PRIVATE
-            )
-            .edit()
-            .putInt(url, position)
-            .apply()
+        uri?.let {
+            context.getSharedPreferences(
+                    "FIVE_FIVE_VIDEO_PALYER_PLAY_POSITION",
+                    Context.MODE_PRIVATE
+                )
+                .edit()
+                .putLong(it.toString(), position)
+                .apply()
+        }
+
     }
 
     /**
@@ -377,11 +382,17 @@ object VideoUtils {
      * @param url     视频链接url
      * @return 上次保存的播放位置
      */
-    fun getSavedPlayPosition(context: Context, url: String?): Int {
-        return context.getSharedPreferences(
-                "NICE_VIDEO_PALYER_PLAY_POSITION",
-                Context.MODE_PRIVATE
-            )
-            .getInt(url, 0)
+    fun getSavedPlayPosition(
+        context: Context,
+        uri: Uri?
+    ): Long {
+        uri?.let {
+            return context.getSharedPreferences(
+                    "FIVE_FIVE_VIDEO_PALYER_PLAY_POSITION",
+                    Context.MODE_PRIVATE
+                )
+                .getLong(it.toString(), 0)
+        }
+        return 0
     }
 }

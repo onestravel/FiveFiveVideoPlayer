@@ -24,9 +24,14 @@ open class MediaPlayerKernel(player: FivePlayerImpl) : MediaKernelApi(player),
     private var mMediaPlayer: MediaPlayer = MediaPlayer()
     override fun prepare(dataSource: MediaDataSource) {
         super.prepare(dataSource)
+        if (mMediaPlayer != null) {
+            if (mMediaPlayer.isPlaying) {
+                mMediaPlayer.stop()
+            }
+            mMediaPlayer.release()
+        }
         mMediaPlayer = MediaPlayer()
         mSurfaceTexture?.let {
-            LogHelper.e("==================", "mSurfaceTexture=" + it)
             mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
             mMediaPlayer.isLooping = dataSource.isLooping
             mMediaPlayer.setOnPreparedListener(this)
@@ -41,7 +46,7 @@ open class MediaPlayerKernel(player: FivePlayerImpl) : MediaKernelApi(player),
             mMediaPlayer.setSurface(mSurface)
             dataSource.uri?.let { uri ->
                 try {
-                    mMediaPlayer.setDataSource(uri.toString())
+                    mMediaPlayer.setDataSource(player.context, uri, dataSource.header)
                     mMediaPlayer.prepareAsync()
                 } catch (e: java.lang.Exception) {
                     player.onError(e)
@@ -85,7 +90,7 @@ open class MediaPlayerKernel(player: FivePlayerImpl) : MediaKernelApi(player),
         runThread(Runnable {
             try {
                 mMediaPlayer.setSurface(null)
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
             mMediaPlayer.release()

@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.onestravel.fivefiveplayer.FivePlayer;
+import cn.onestravel.fivefiveplayer.kernel.IJKPlayerKernel;
 
 import static androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE;
 

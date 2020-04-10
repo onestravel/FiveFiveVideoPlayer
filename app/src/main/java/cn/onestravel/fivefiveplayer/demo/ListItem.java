@@ -14,7 +14,7 @@ import cn.onestravel.fivefiveplayer.interf.PlayerInterface;
 import kotlin.Unit;
 
 /**
- * Created by wanghu on 2020/3/26
+ * Created by onestravel on 2020/3/26
  */
 public class ListItem extends FrameLayout {
     private FiveVideoView mVideoView;

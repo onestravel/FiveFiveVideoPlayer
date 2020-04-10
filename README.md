@@ -172,12 +172,101 @@ FiveVideoView ：视频播放的View，无控制栏，标题栏，可设置（�
            super.onDestroy()
        }
 ```
+#### 2.5 全局设置播放器内核
+
+在设置播放器视频资源地址之前可设置播放器内核，默认为MediaPlayer内核，可选内核有``IJKPlayer``内核和``ExoPlayer``内核
+具体设置方法如下：
+kotlin 
+```kotlin
+ 
+fun initData {
+          val path = "http://vfx.mtime.cn/Video/2019/03/19/mp4/190319212559089721.mp4"
+//         设置为IJKPlayer 播放器内核
+//         FivePlayer.mediaKernelClass = IJKPlayerKernel::class.java
+//         设置为ExoPlayer播放器内核
+         FivePlayer.mediaKernelClass = ExoPlayerKernel::class.java
+        fiveVideoView.setDataSource(path)
+        fiveVideoView.setOnPreparedListener {
+            it.start()
+            fiveVideoView.setVideoDisplayType(PlayerInterface.VIDEO_DISPLAY_TYPE_FIT_CENTER)
+    }
+      
+     override fun onDestroy() {
+           try {
+               fiveVideoPlayer?.let {
+                   it.reset()
+                   it.release()
+               }
+           } catch (e: Exception) {
+               e.printStackTrace()
+           }
+           super.onDestroy()
+       }
+```
+
+Java
+
+```java
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_douyin_list);
+        //设置为IJKPlayer 播放器内核
+        //FivePlayer.INSTANCE.setMediaKernelClazz(IJKPlayerKernel.class);
+        //设置为ExoPlayer播放器内核
+        FivePlayer.INSTANCE.setMediaKernelClass(ExoPlayerKernel.class);
+       //...
+    }
+
+```
+
+#### 2.6 设置是否开启硬件解码
+
+kotlin
+```kotlin
+    //关闭硬件解码
+    FivePlayer.enableMediaCodec = false
+```
+java
+```java
+    //关闭硬件解码
+    FivePlayer.INSTANCE.setEnableMediaCodec(false);
+```
+
+#### 2.7 单个视频播放器设置播放器内核
+除了上面所说的可以全局设置播放器内核外，也可以针对某一个播放器设置播放器内核，方法时通过调用播放器``FiveVideoView``或``FiveVideoPlayer``对象的``setMediaKernelClass(clazz:Class<out MediaKernelApi>)``方法来设置单个播放器内核
+
+eg:
+
+```kotlin
+    fun initData {
+          val path = "http://vfx.mtime.cn/Video/2019/03/19/mp4/190319212559089721.mp4"
+        //设置当前播放器内核为ExoPlayer 内核
+        fiveVideoView.setMediaKernelClass(ExoPlayerKernel::class.java)
+        fiveVideoView.setDataSource(path)
+        fiveVideoView.setOnPreparedListener {
+            it.start()
+            fiveVideoView.setVideoDisplayType(PlayerInterface.VIDEO_DISPLAY_TYPE_FIT_CENTER)
+    }
+```
+
+
 
 
 ## 3. API 文档
 点击 [FiveFiveVideoPlayer API 文档](API.md)查看详细API
 
+
 ## 4. 版本记录
+> V 1.0.1
+
+    1. 实现集成 IJKplayer 内核，可开启硬解码;
+    
+    2. 实现ExoPlayer内核;
+    
+    3. 实现可全局设置播放器内核功能;
+    
+    4. 修复已知bug
 
 
 > V 1.0.0

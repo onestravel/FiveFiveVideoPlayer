@@ -3,6 +3,8 @@ package cn.onestravel.fivefiveplayer.demo
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import cn.onestravel.fivefiveplayer.interf.PlayerInterface
+import cn.onestravel.fivefiveplayer.kernel.ExoPlayerKernel
+import cn.onestravel.fivefiveplayer.kernel.IJKPlayerKernel
 import kotlinx.android.synthetic.main.activity_five_video_view.*
 
 /**
@@ -24,6 +26,7 @@ open class FiveVideoViewActivity : AppCompatActivity() {
     }
 
     private fun initData() {
+        fiveVideoView.setMediaKernelClass(ExoPlayerKernel::class.java)
         fiveVideoView.setDataSource(path)
         fiveVideoView.setOnPreparedListener {
             it.start()

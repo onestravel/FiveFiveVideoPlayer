@@ -29,7 +29,7 @@ import cn.onestravel.fivefiveplayer.demo.R;
 import cn.onestravel.fivefiveplayer.utils.LogHelper;
 
 /**
- * Created by wanghu on 2019-10-30
+ * Created by onestravel on 2019-10-30
  */
 public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRecyclerAdapter.BaseRecyclerViewHolder> implements View.OnClickListener, View.OnLongClickListener {
     protected Context context;

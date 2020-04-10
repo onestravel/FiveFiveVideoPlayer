@@ -1,30 +1,36 @@
 package cn.onestravel.fivefiveplayer.impl
 
+import android.content.Context
 import android.graphics.SurfaceTexture
 import android.net.Uri
 import android.os.Build
 import android.os.Handler
 import androidx.annotation.RequiresApi
+import cn.onestravel.fivefiveplayer.FivePlayer
 import cn.onestravel.fivefiveplayer.MediaDataSource
 import cn.onestravel.fivefiveplayer.interf.PlayerCallBack
 import cn.onestravel.fivefiveplayer.interf.PlayerInterface
+import cn.onestravel.fivefiveplayer.kernel.MediaKernelApi
 import cn.onestravel.fivefiveplayer.kernel.MediaKernelInterface
 import cn.onestravel.fivefiveplayer.kernel.MediaPlayerKernel
 import cn.onestravel.fivefiveplayer.utils.LogHelper
+import cn.onestravel.fivefiveplayer.utils.VideoUtils
 import cn.onestravel.fivefiveplayer.view.VideoTextureView
+import java.lang.reflect.Constructor
 
 /**
  * @author onestravel
  * @createTime 2020-03-19
  * @description 媒体内核处理类
  */
-class FivePlayerImpl {
+class FivePlayerImpl(val context: Context) {
     private val TAG: String = javaClass.simpleName
     private var mDataSource: MediaDataSource? = null
-    private var mMediaKernel: MediaKernelInterface = MediaPlayerKernel(this)
+    private var mMediaKernel: MediaKernelInterface = newInstance(FivePlayer.mediaKernelClazz)
     private var mState: Int = PlayerInterface.STATE_IDLE
     private var mPlayerCallBack: PlayerCallBack? = null
     private var mTextureView: VideoTextureView? = null
+    private var continuePlayFromPerPosition = false
 
     fun attachTextureView(textureView: VideoTextureView) {
         this.mTextureView = textureView
@@ -54,8 +60,26 @@ class FivePlayerImpl {
     /**
      * 设置播放器媒体内核
      */
-    fun setMediaKernel(mediaKernel: MediaKernelInterface) {
-        this.mMediaKernel = mMediaKernel;
+    fun setMediaKernel(clazz: Class<out MediaKernelApi>) {
+        this.mMediaKernel = newInstance(clazz)
+    }
+
+    /**
+     * 根据传入的内核类初始化一个内核对象
+     */
+    private fun newInstance(clazz: Class<out MediaKernelApi>): MediaKernelApi {
+        try {
+            val cls = Class.forName(clazz.name)
+            //构造有一个参数的构造函数；（参数类型）
+            val constructor: Constructor<*> = cls.getDeclaredConstructor(FivePlayerImpl::class.java)
+            //根据构造函数，传入值生成实例
+            return constructor.newInstance(this) as MediaKernelApi
+        } catch (e: ClassNotFoundException) {
+            LogHelper.e(TAG, " ${clazz.simpleName} class not found", e)
+        } catch (e: Exception) {
+            LogHelper.e(TAG, "init ${clazz.simpleName} object error", e)
+        }
+        return MediaPlayerKernel(this)
     }
 
     /**
@@ -92,6 +116,10 @@ class FivePlayerImpl {
             mState == PlayerInterface.STATE_PAUSED ||
             mState == PlayerInterface.STATE_COMPLETE
         ) {
+            val position = VideoUtils.getSavedPlayPosition(context, mDataSource?.uri)
+            if (position > 20) {
+                seekTo(position - 20)
+            }
             mMediaKernel.start()
             onPlaying()
         }
@@ -117,6 +145,7 @@ class FivePlayerImpl {
         if (mState == PlayerInterface.STATE_PLAYING ||
             mState == PlayerInterface.STATE_BUFFERING_PLAYING
         ) {
+            VideoUtils.savePlayPosition(context, mDataSource?.uri, getCurrentPosition())
             mMediaKernel.pause()
             onPaused()
         }
@@ -129,6 +158,7 @@ class FivePlayerImpl {
         if (mState == PlayerInterface.STATE_PLAYING ||
             mState == PlayerInterface.STATE_BUFFERING_PLAYING
         ) {
+            VideoUtils.savePlayPosition(context, mDataSource?.uri, getCurrentPosition())
             mMediaKernel.stop()
             onStopped()
         }
@@ -141,6 +171,10 @@ class FivePlayerImpl {
         if (mState == PlayerInterface.STATE_PAUSED ||
             mState == PlayerInterface.STATE_BUFFERING_PAUSED
         ) {
+            val position = VideoUtils.getSavedPlayPosition(context, mDataSource?.uri)
+            if (position > 0) {
+                seekTo(position)
+            }
             mMediaKernel.resume()
             onResume()
             onPlaying()
@@ -274,6 +308,7 @@ class FivePlayerImpl {
         try {
             mState = PlayerInterface.STATE_IDLE
             mProgressHandler.removeCallbacks(mProgressTicker)
+            VideoUtils.savePlayPosition(context, mDataSource?.uri, 0)
             mMediaKernel.stop()
             mMediaKernel.reset()
         } catch (e: java.lang.Exception) {
@@ -288,6 +323,7 @@ class FivePlayerImpl {
         try {
             mState = PlayerInterface.STATE_IDLE
             mProgressHandler.removeCallbacks(mProgressTicker)
+            VideoUtils.savePlayPosition(context, mDataSource?.uri, 0)
             mMediaKernel.stop()
             mMediaKernel.release()
         } catch (e: java.lang.Exception) {
@@ -300,6 +336,11 @@ class FivePlayerImpl {
      */
     fun onPrepared() {
         mState = PlayerInterface.STATE_PREPARED
+        val continuePlay = continuePlayFromPerPosition
+        start()
+        if (!continuePlay) {
+            pause()
+        }
         mPlayerCallBack?.let {
             it.onPrepared()
         }
@@ -322,6 +363,7 @@ class FivePlayerImpl {
      * 停止播放回调
      */
     fun onStopped() {
+        continuePlayFromPerPosition = false
         mState = PlayerInterface.STATE_STOP
         mProgressHandler.removeCallbacks(mProgressTicker)
         mPlayerCallBack?.let {
@@ -333,6 +375,7 @@ class FivePlayerImpl {
      * 暂停播放回调
      */
     fun onPaused() {
+        continuePlayFromPerPosition = false
         mState = PlayerInterface.STATE_PAUSED
         mProgressHandler.removeCallbacks(mProgressTicker)
         mPlayerCallBack?.let {
@@ -341,6 +384,7 @@ class FivePlayerImpl {
     }
 
     private fun onResume() {
+        continuePlayFromPerPosition = true
         mPlayerCallBack?.let {
             it.onResume()
         }
@@ -373,10 +417,12 @@ class FivePlayerImpl {
      */
     fun onPlaying() {
         mState = PlayerInterface.STATE_PLAYING
+        continuePlayFromPerPosition = true
         mProgressHandler.post(mProgressTicker)
         mPlayerCallBack?.let {
             it.onPlaying()
         }
+
     }
 
     /**
@@ -416,17 +462,20 @@ class FivePlayerImpl {
      * 视频播放完成回调
      */
     fun onCompletion() {
+        continuePlayFromPerPosition = false
         mState = PlayerInterface.STATE_COMPLETE
         mPlayerCallBack?.let {
             it.onCompletion()
         }
         mProgressHandler.removeCallbacks(mProgressTicker)
+        VideoUtils.savePlayPosition(context, mDataSource?.uri, 0)
     }
 
     /**
      * 视频播放异常回调
      */
     fun onError(e: Exception) {
+        continuePlayFromPerPosition = false
         mState = PlayerInterface.STATE_ERROR
         LogHelper.e(mMediaKernel.javaClass.simpleName, "Player Exception:", e)
         mPlayerCallBack?.let {

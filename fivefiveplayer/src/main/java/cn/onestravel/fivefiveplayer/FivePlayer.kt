@@ -1,6 +1,8 @@
 package cn.onestravel.fivefiveplayer
 
 import cn.onestravel.fivefiveplayer.interf.PlayerInterface
+import cn.onestravel.fivefiveplayer.kernel.MediaKernelApi
+import cn.onestravel.fivefiveplayer.kernel.MediaPlayerKernel
 import java.util.*
 
 /**
@@ -10,6 +12,17 @@ import java.util.*
  */
 object FivePlayer {
     private val mPlayerList: LinkedList<PlayerInterface> by lazy { LinkedList<PlayerInterface>() }
+
+    /**
+     * 是否开启硬解码
+     */
+    var enableMediaCodec = true
+
+    /**
+     * 全局内核类文件
+     */
+    var mediaKernelClass: Class<out MediaKernelApi> = MediaPlayerKernel::class.java
+
 
     /**
      * 播放器注册

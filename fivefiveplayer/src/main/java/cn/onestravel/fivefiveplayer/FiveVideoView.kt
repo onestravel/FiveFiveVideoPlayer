@@ -15,7 +15,7 @@ import cn.onestravel.fivefiveplayer.impl.FivePlayerImpl
 import cn.onestravel.fivefiveplayer.impl.FiveVideoGestureListener
 import cn.onestravel.fivefiveplayer.impl.VideoDisplayTypeDef
 import cn.onestravel.fivefiveplayer.interf.*
-import cn.onestravel.fivefiveplayer.kernel.MediaKernelInterface
+import cn.onestravel.fivefiveplayer.kernel.MediaKernelApi
 import cn.onestravel.fivefiveplayer.utils.VideoUtils
 import cn.onestravel.fivefiveplayer.view.VideoTextureView
 import com.bumptech.glide.Glide
@@ -45,7 +45,7 @@ open class FiveVideoView @JvmOverloads constructor(
     private val mPlayIv: ImageView by lazy { ImageView(context) }
     private val mThumbIv: ImageView by lazy { ImageView(context) }
     private val mLoadingBar: ProgressBar by lazy { ProgressBar(context) }
-    private val mPlayer: FivePlayerImpl by lazy { FivePlayerImpl() }
+    private val mPlayer: FivePlayerImpl by lazy { FivePlayerImpl(context) }
     private val mTouchEventCountThread: TouchEventCountThread by lazy { TouchEventCountThread() }
     private val mVideoGestureListener: FiveVideoGestureListener by lazy {
         FiveVideoGestureListener(
@@ -143,8 +143,8 @@ open class FiveVideoView @JvmOverloads constructor(
     /**
      * 设置播放器媒体内核
      */
-    override fun setMediaKernel(mediaKernel: MediaKernelInterface) {
-        mPlayer.setMediaKernel(mediaKernel)
+    override fun setMediaKernelClass(clazz:Class<out MediaKernelApi>) {
+        mPlayer.setMediaKernel(clazz)
         reset()
     }
 
@@ -515,6 +515,10 @@ open class FiveVideoView @JvmOverloads constructor(
                 }
                 isPaused() -> {
                     resume()
+                }
+                isCompletion()->{
+                    seekTo(0)
+                    start()
                 }
                 else -> {
                     start()

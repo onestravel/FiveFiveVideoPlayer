@@ -3,7 +3,12 @@ package cn.onestravel.fivefiveplayer.demo
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import cn.onestravel.fivefiveplayer.FivePlayer
+import cn.onestravel.fivefiveplayer.FiveVideoPlayer
 import cn.onestravel.fivefiveplayer.FiveVideoPlayerActivity
+import cn.onestravel.fivefiveplayer.kernel.ExoPlayerKernel
+import cn.onestravel.fivefiveplayer.kernel.IJKPlayerKernel
+import kotlinx.android.synthetic.main.activity_five_video_view.*
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -16,6 +21,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+//        FivePlayer.mediaKernelClass = IJKPlayerKernel::class.java
+        FivePlayer.mediaKernelClass = ExoPlayerKernel::class.java
         btnFiveVideoView.setOnClickListener {
             val intent = Intent(this@MainActivity, FiveVideoViewActivity::class.java)
             startActivity(intent)

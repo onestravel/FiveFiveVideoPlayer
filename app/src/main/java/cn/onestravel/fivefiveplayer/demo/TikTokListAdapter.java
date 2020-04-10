@@ -13,7 +13,7 @@ import cn.onestravel.fivefiveplayer.demo.common.BaseRecyclerAdapter;
 import cn.onestravel.fivefiveplayer.utils.LogHelper;
 
 /**
- * Created by wanghu on 2019-10-30
+ * Created by onestravel on 2019-10-30
  */
 public class TikTokListAdapter extends BaseRecyclerAdapter<String> {
     private static String TAG = TikTokListAdapter.class.getSimpleName();
