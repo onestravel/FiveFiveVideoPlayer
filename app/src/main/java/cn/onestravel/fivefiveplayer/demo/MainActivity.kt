@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 //        FivePlayer.mediaKernelClass = IJKPlayerKernel::class.java
-        FivePlayer.mediaKernelClass = ExoPlayerKernel::class.java
+//        FivePlayer.mediaKernelClass = ExoPlayerKernel::class.java
         btnFiveVideoView.setOnClickListener {
             val intent = Intent(this@MainActivity, FiveVideoViewActivity::class.java)
             startActivity(intent)

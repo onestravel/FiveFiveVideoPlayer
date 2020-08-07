@@ -50,6 +50,7 @@ open class FiveVideoPlayer @JvmOverloads constructor(
     private var onProgressListener: OnProgressListener? = null
     private var onCompleteListener: OnCompleteListener? = null
     private var onErrorListener: OnErrorListener? = null
+    private var onBackPressListener: OnBackPressListener? = null
     var hideViewEnable: Boolean = true
     var gestureControlEnable: Boolean = true
         set(value) {
@@ -100,6 +101,10 @@ open class FiveVideoPlayer @JvmOverloads constructor(
             it.setOnClickListener {
                 if (mPlayerState == PlayerInterface.PLAYER_STATE_FULL_SCREEN) {
                     _exitFullScreen()
+                } else {
+                    onBackPressListener?.let { callback ->
+                        callback.invoke()
+                    }
                 }
             }
         }
@@ -176,7 +181,7 @@ open class FiveVideoPlayer @JvmOverloads constructor(
     /**
      * 设置播放器内核
      */
-    override fun setMediaKernelClass(clazz:Class<out MediaKernelApi>) {
+    override fun setMediaKernelClass(clazz: Class<out MediaKernelApi>) {
         mFiveVideoView?.let {
             it.setMediaKernelClass(clazz)
         }
@@ -194,6 +199,10 @@ open class FiveVideoPlayer @JvmOverloads constructor(
             it.removeAllViews()
             it.addView(mController?.getControllerView())
         }
+    }
+
+    fun setOnBackPressListener(backPressListener: OnBackPressListener) {
+        this.onBackPressListener = backPressListener;
     }
 
     override fun start() {
@@ -498,7 +507,7 @@ open class FiveVideoPlayer @JvmOverloads constructor(
             // 小窗口的宽度为屏幕宽度的60%，长宽比默认为16:9，右边距、下边距为8dp。
             val params = LayoutParams(
                 (VideoUtils.getScreenWidth(context) * 0.6f).toInt(),
-                (VideoUtils.getScreenWidth(context) * 0.6f * 9f / 16f) .toInt()
+                (VideoUtils.getScreenWidth(context) * 0.6f * 9f / 16f).toInt()
             )
             params.gravity = Gravity.BOTTOM or Gravity.END
             params.rightMargin = VideoUtils.dp2px(context, 8f)
@@ -670,7 +679,7 @@ open class FiveVideoPlayer @JvmOverloads constructor(
                 it.postDelayed({
                     it.clearAnimation()
                     it.visibility = View.GONE
-                },200)
+                }, 200)
             }
         }
     }

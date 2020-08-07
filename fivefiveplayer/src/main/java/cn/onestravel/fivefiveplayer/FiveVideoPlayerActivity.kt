@@ -19,8 +19,9 @@ import java.lang.Exception
 open class FiveVideoPlayerActivity : AppCompatActivity() {
     private var isPlaying: Boolean = false
     private var mediaDataSource: MediaDataSource? = null
+    protected open var autoStart: Boolean = false
 
-    companion object{
+    companion object {
         const val VIDEO_PATH: String = "videoPath"
         const val VIDEO_TITLE: String = "videoTitle"
         const val VIDEO_LOOPING: String = "videoLooping"
@@ -45,39 +46,52 @@ open class FiveVideoPlayerActivity : AppCompatActivity() {
     }
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.five_activity_video_player)
         try {
-            VideoUtils.setWindowStatusBarColor(this,R.color.five_color_bg_color_black)
+            VideoUtils.setWindowStatusBarColor(this, R.color.five_color_bg_color_black)
             VideoUtils.hideActionBar(this)
-            VideoUtils.setNavigationBarColor(this,R.color.five_color_bg_color_black)
+            VideoUtils.setNavigationBarColor(this, R.color.five_color_bg_color_black)
         } catch (e: Exception) {
             e.printStackTrace()
         }
         val path = intent.getStringExtra(VIDEO_PATH)
-        val title = intent.getStringExtra(VIDEO_TITLE)
+        var title = intent.getStringExtra(VIDEO_TITLE)
         val looping = intent.getBooleanExtra(VIDEO_LOOPING, false)
-        if (TextUtils.isEmpty(path)) {
+        var uri = intent.data
+        if (TextUtils.isEmpty(path) && uri == null) {
             finish()
             return
         }
-        mediaDataSource = MediaDataSource(title, Uri.parse(path), looping)
+        if (uri == null) {
+            uri = Uri.parse(path)
+        } else {
+            autoStart = true
+            title = uri.path?.substring((uri.path?.lastIndexOf("/") ?: -1) + 1) ?: ""
+        }
+        mediaDataSource = MediaDataSource(title, uri, looping)
         initData()
     }
 
     private fun initData() {
-        val path = intent.getStringExtra(VIDEO_PATH)
-        val title = intent.getStringExtra(VIDEO_TITLE)
-        val looping = intent.getBooleanExtra(VIDEO_LOOPING, false)
-        if (TextUtils.isEmpty(path)) {
-            finish()
-            return
-        }
-        mediaDataSource = MediaDataSource(title, Uri.parse(path), looping)
+//        val path = intent.getStringExtra(VIDEO_PATH)
+//        val title = intent.getStringExtra(VIDEO_TITLE)
+//        val looping = intent.getBooleanExtra(VIDEO_LOOPING, false)
+//        var uri = intent.data
+//        if (TextUtils.isEmpty(path) && uri == null) {
+//            finish()
+//            return
+//        }
+//        if (uri == null) {
+//            uri = Uri.parse(path);
+//        }
+//        mediaDataSource = MediaDataSource(title, uri, looping)
+        fiveVideoPlayer.setOnBackPressListener { finish() }
         fiveVideoPlayer.setOnPreparedListener {
-//            it.start()
+            if(autoStart){
+                it.start()
+            }
             it.setVideoDisplayType(PlayerInterface.VIDEO_DISPLAY_TYPE_FIT_CENTER)
         }
         mediaDataSource?.let {

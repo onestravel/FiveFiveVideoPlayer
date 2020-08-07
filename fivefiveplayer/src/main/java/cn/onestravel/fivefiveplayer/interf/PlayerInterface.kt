@@ -18,6 +18,7 @@ typealias OnPreparedListener = (PlayerInterface) -> Unit
 typealias OnProgressListener = (position: Long, duration: Long) -> Unit
 typealias OnCompleteListener = () -> Unit
 typealias OnErrorListener = (Exception) -> Unit
+typealias OnBackPressListener = () -> Unit
 
 interface PlayerInterface {
     companion object {

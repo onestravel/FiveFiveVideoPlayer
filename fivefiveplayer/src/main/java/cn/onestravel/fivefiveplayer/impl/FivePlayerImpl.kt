@@ -462,6 +462,7 @@ class FivePlayerImpl(val context: Context) {
      * 视频播放完成回调
      */
     fun onCompletion() {
+        onProgressChanged(getDuration(), getCurrentPosition())
         continuePlayFromPerPosition = false
         mState = PlayerInterface.STATE_COMPLETE
         mPlayerCallBack?.let {
