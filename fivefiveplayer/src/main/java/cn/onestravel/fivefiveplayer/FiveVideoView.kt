@@ -143,7 +143,7 @@ open class FiveVideoView @JvmOverloads constructor(
     /**
      * 设置播放器媒体内核
      */
-    override fun setMediaKernelClass(clazz:Class<out MediaKernelApi>) {
+    override fun setMediaKernelClass(clazz: Class<out MediaKernelApi>) {
         mPlayer.setMediaKernel(clazz)
         reset()
     }
@@ -165,6 +165,18 @@ open class FiveVideoView @JvmOverloads constructor(
         lpIvPlay.gravity = Gravity.CENTER
         mPlayIv.layoutParams = lpIvPlay
         mPlayIv.setImageResource(R.drawable.drawable_five_icon_play)
+        mPlayIv?.let {
+            it.setOnClickListener {
+                if (isPlaying()) {
+                    pause()
+                } else {
+                    resume()
+                }
+                onClickListener?.let { listener ->
+                    listener.onClick(this)
+                }
+            }
+        }
         hidePlayIcon()
         addView(mPlayIv)
 
@@ -195,7 +207,7 @@ open class FiveVideoView @JvmOverloads constructor(
         Glide.with(mThumbIv)
             .asBitmap()
             .load(url)
-            .override(2,2)
+            .override(2, 2)
             .centerCrop()
             .into(mThumbIv)
 
@@ -516,7 +528,7 @@ open class FiveVideoView @JvmOverloads constructor(
                 isPaused() -> {
                     resume()
                 }
-                isCompletion()->{
+                isCompletion() -> {
                     seekTo(0)
                     start()
                 }
